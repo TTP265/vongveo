@@ -45,6 +45,7 @@ const pool = new Pool({
       );
       adminId = insertRes.rows[0].id;
       console.log(`✅ Created admin user (id=${adminId}).`);
+await pool.query('DELETE FROM products WHERE user_id = $1', [adminId]);
     }
 
     // ---------------------------------------------------------------
@@ -59,7 +60,7 @@ const pool = new Pool({
         condition: 92,
         type: 'Bán',
         price: 1800000,
-        image_url: '/images/fashion1.svg'
+        image_url: 'https://picsum.photos/seed/aokhoacbomber/400/300'
       },
       {
         name: 'Váy đầm dạ hội sang trọng',
@@ -68,7 +69,7 @@ const pool = new Pool({
         condition: 96,
         type: 'Cho thuê',
         price: 350000,
-        image_url: '/images/fashion2.svg'
+        image_url: 'https://picsum.photos/seed/vaydamdahoisangtrong/400/300'
       },
       {
         name: 'Quần jean skinny',
@@ -77,7 +78,7 @@ const pool = new Pool({
         condition: 88,
         type: 'Bán',
         price: 650000,
-        image_url: '/images/fashion3.svg'
+        image_url: 'https://picsum.photos/seed/quanjeanskinny/400/300'
       },
       {
         name: 'Mũ lưỡi trai phong cách',
@@ -86,7 +87,7 @@ const pool = new Pool({
         condition: 90,
         type: 'Cho thuê',
         price: 120000,
-        image_url: '/images/fashion4.svg'
+        image_url: 'https://picsum.photos/seed/muluoitraitphongcach/400/300'
       },
       // Đồ gia dụng
       {
@@ -96,7 +97,7 @@ const pool = new Pool({
         condition: 95,
         type: 'Bán',
         price: 1200000,
-        image_url: '/images/home1.svg'
+        image_url: 'https://picsum.photos/seed/mayxaysinhtodanan/400/300'
       },
       {
         name: 'Bếp điện từ 2 bếp',
@@ -105,7 +106,7 @@ const pool = new Pool({
         condition: 93,
         type: 'Cho thuê',
         price: 250000,
-        image_url: '/images/home2.svg'
+        image_url: 'https://picsum.photos/seed/bepdientu2bep/400/300'
       },
       {
         name: 'Bộ ấm trà sứ',
@@ -114,7 +115,7 @@ const pool = new Pool({
         condition: 98,
         type: 'Bán',
         price: 850000,
-        image_url: '/images/home3.svg'
+        image_url: 'https://picsum.photos/seed/boamtrasu/400/300'
       },
       {
         name: 'Máy lọc không khí mini',
@@ -123,7 +124,7 @@ const pool = new Pool({
         condition: 90,
         type: 'Cho thuê',
         price: 180000,
-        image_url: '/images/home4.svg'
+        image_url: 'https://picsum.photos/seed/maylockhongkhimini/400/300'
       },
       // Dụng cụ học tập
       {
@@ -133,7 +134,7 @@ const pool = new Pool({
         condition: 87,
         type: 'Bán',
         price: 15000000,
-        image_url: '/images/edu1.svg'
+        image_url: 'https://picsum.photos/seed/laptopdellinspiron/400/300'
       },
       {
         name: 'Máy chiếu mini HD',
@@ -142,7 +143,7 @@ const pool = new Pool({
         condition: 91,
         type: 'Cho thuê',
         price: 300000,
-        image_url: '/images/edu2.svg'
+        image_url: 'https://picsum.photos/seed/maychieuminihd/400/300'
       },
       {
         name: 'Bảng viết điện tử',
@@ -151,7 +152,7 @@ const pool = new Pool({
         condition: 94,
         type: 'Bán',
         price: 2200000,
-        image_url: '/images/edu3.svg'
+        image_url: 'https://picsum.photos/seed/bangvietdien/400/300'
       },
       {
         name: 'Bàn học gập gọn',
@@ -160,7 +161,7 @@ const pool = new Pool({
         condition: 89,
         type: 'Cho thuê',
         price: 150000,
-        image_url: '/images/edu4.svg'
+        image_url: 'https://picsum.photos/seed/banhocgapgon/400/300'
       },
       // Đồ sự kiện
       {
@@ -170,7 +171,7 @@ const pool = new Pool({
         condition: 93,
         type: 'Bán',
         price: 4200000,
-        image_url: '/images/event1.svg'
+        image_url: 'https://picsum.photos/seed/amthanhkaraoke/400/300'
       },
       {
         name: 'Bạt che mưa 10x5m',
@@ -179,7 +180,7 @@ const pool = new Pool({
         condition: 95,
         type: 'Cho thuê',
         price: 400000,
-        image_url: '/images/event2.svg'
+        image_url: 'https://picsum.photos/seed/batchemu/400/300'
       },
       {
         name: 'Đèn LED dây 10m',
@@ -188,7 +189,7 @@ const pool = new Pool({
         condition: 98,
         type: 'Bán',
         price: 650000,
-        image_url: '/images/event3.svg'
+        image_url: 'https://picsum.photos/seed/denled/400/300'
       },
       {
         name: 'Bàn tiệc gấp',
@@ -197,7 +198,7 @@ const pool = new Pool({
         condition: 90,
         type: 'Cho thuê',
         price: 250000,
-        image_url: '/images/event4.svg'
+        image_url: 'https://picsum.photos/seed/bantiqgap/400/300'
       }
     ];
 

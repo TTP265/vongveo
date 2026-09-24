@@ -38,7 +38,7 @@ const ProductCard = ({ product }) => {
                 <span className={`product-type-badge ${badgeClass}`}>{label}</span>
                 {product.status === 'SOLD' && <span className="product-status-badge">SOLD</span>}
                               <img
-                src={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : ''}/uploads/${product.image_url}`}
+                src={product.image_url.startsWith('http') ? product.image_url : `${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : ''}/uploads/${product.image_url}`}
                 alt={product.name}
                 className="product-image"
               />
