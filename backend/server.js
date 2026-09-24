@@ -74,7 +74,13 @@ async function ensureDefaultAdmin() {
       );
       console.log('✅ Default admin created (id=' + res.rows[0].id + ')');
     } else {
-      console.log('✅ Default admin already exists (id=' + existing.id + ')');
+      // Ensure password is correct and account is active
+      const hashed = await bcrypt.hash('123456', 10);
+      await db.run(
+        `UPDATE users SET password = $1, is_active = true WHERE id = $2`,
+        [hashed, existing.id]
+      );
+      console.log('✅ Default admin password reset (id=' + existing.id + ')');
     }
   } catch (err) {
     console.error('❌ Error ensuring default admin:', err);
