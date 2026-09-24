@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../components/Header';
+import { getImageUrl } from '../utils/imageUrl';
 
 const MyOrders = () => {
     const [orders, setOrders] = useState([]);
@@ -60,7 +61,7 @@ const MyOrders = () => {
                                 {order.note && <p>Ghi chú: {order.note}</p>}
                                 {order.items.map((item) => (
                                     <div className="order-product-line" key={`${order.id}-${item.product_id}`}>
-                                        <img className="order-product-image" src={item.image_url} alt={item.name} />
+                                        <img className="order-product-image" src={getImageUrl(item.image_url)} alt={item.name} />
                                         <p>{item.name} × {item.quantity}{item.type === 'Cho thuê' ? ` · ${item.rent_days} ngày` : ''} — {Number(item.price * item.quantity * (item.type === 'Cho thuê' ? item.rent_days : 1)).toLocaleString('vi-VN')}đ · {item.item_status}</p>
                                     </div>
                                 ))}

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import Header from '../components/Header';
+import { getImageUrl } from '../utils/imageUrl';
 
 const SellerOrders = () => {
     const [orders, setOrders] = useState([]);
@@ -48,7 +49,7 @@ const SellerOrders = () => {
                                     <span>{order.item_status}</span>
                                 </div>
                                 <div className="order-product-line">
-                                    <img className="order-product-image" src={order.product_image} alt={order.product_name} />
+                                    <img className="order-product-image" src={getImageUrl(order.product_image)} alt={order.product_name} />
                                     <p><strong>{order.product_name}</strong> × {order.quantity}</p>
                                 </div>
                                 <p>Người mua/thuê: {order.buyer_name} ({order.buyer_email})</p>

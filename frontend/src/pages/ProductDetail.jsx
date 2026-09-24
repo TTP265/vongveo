@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { Link, useLocation, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { getImageUrl } from '../utils/imageUrl';
 import Header from '../components/Header';
 import { AuthContext } from '../context/AuthContext';
 import { CartContext } from '../context/CartContext';
@@ -32,7 +33,7 @@ const ProductDetail = () => {
                 const response = await axios.get(isAdminView ? `/api/products/admin/${id}` : `/api/products/${id}`);
                 setProduct(response.data);
                 const imageResponse = await axios.get(isAdminView ? `/api/products/admin/${id}/images` : `/api/products/${id}/images`);
-                const allImages = imageResponse.data.length ? imageResponse.data : [response.data.image_url].filter(Boolean);
+                const allImages = (imageResponse.data.length ? imageResponse.data : [response.data.image_url].filter(Boolean)).map(url => getImageUrl(url));
                 setImageUrls(allImages);
                 setActiveImage(allImages[0] || '');
                 if (!isAdminView) {
@@ -110,7 +111,7 @@ const ProductDetail = () => {
                 ) : (
                     <article className="detail-card">
                         <div className="detail-gallery">
-                            <img src={activeImage || product.image_url} alt={product.name} className="detail-image" />
+                            <img src={activeImage || getImageUrl(product.image_url)} alt={product.name} className="detail-image" />
                             {imageUrls.length > 1 && <div className="detail-thumbnails">
                                 {imageUrls.map((url) => <button type="button" className={`detail-thumbnail ${activeImage === url ? 'active' : ''}`} key={url} onClick={() => setActiveImage(url)} aria-label={`Xem ảnh sản phẩm`}><img src={url} alt="" /></button>)}
                             </div>}

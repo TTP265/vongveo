@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { getImageUrl } from '../utils/imageUrl';
 import axios from 'axios';
 import Header from '../components/Header';
 import { AuthContext } from '../context/AuthContext';
@@ -62,7 +63,7 @@ const Cart = () => {
                             </label>
                             {items.map((item) => (
                                 <article className="cart-item" key={item.id}>
-                                    <img src={item.image_url} alt={item.name} />
+                                    <img src={getImageUrl(item.image_url)} alt={item.name} />
                                     <div className="cart-item-info">
                                         <label className="cart-item-select">
                                             <input type="checkbox" checked={selectedIds.includes(item.id)} onChange={(event) => setSelectedIds((current) => event.target.checked ? [...current, item.id] : current.filter((id) => id !== item.id))} />

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import Header from '../components/Header';
+import { getImageUrl } from '../utils/imageUrl';
 
 const categories = ['Thời trang', 'Đồ gia dụng', 'Dụng cụ học tập', 'Đồ sự kiện'];
 const emptyForm = { name: '', category: '', description: '', type: '', price: '' };
@@ -128,7 +129,7 @@ const MyProducts = () => {
                     <div className="admin-product-list">
                         {products.map((product) => (
                             <article className="admin-product" key={product.id}>
-                                <img src={product.image_url} alt={product.name} className="admin-product-image" />
+                                <img src={getImageUrl(product.image_url)} alt={product.name} className="admin-product-image" />
                                 <div className="admin-product-details">
                                     <h2>{product.name}</h2>
                                     <p>Trạng thái: {product.status}</p>
