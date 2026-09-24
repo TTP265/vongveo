@@ -4,6 +4,7 @@ import axios from 'axios';
 import { MessageCircle } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import placeholderImg from '../assets/hero.png';
+import { getImageUrl } from '../utils/imageUrl';
 const ProductCard = ({ product }) => {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -39,10 +40,8 @@ const ProductCard = ({ product }) => {
                 {product.status === 'SOLD' && <span className="product-status-badge">SOLD</span>}
                               <img
                 src={product.image_url && product.image_url.trim()
-                    ? (product.image_url.startsWith('http')
-                        ? product.image_url
-                        : `${import.meta.env.VITE_API_URL || ''}/uploads/${product.image_url}`)
-                    : placeholderImg}
+                  ? getImageUrl(product.image_url)
+                  : placeholderImg}
                 alt={product.name}
                 className="product-image"
               />
