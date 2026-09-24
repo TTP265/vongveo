@@ -4,6 +4,7 @@ const { Pool } = require('pg');
 // DATABASE_URL is supplied by Render (or local .env)
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
 });
 
 // Simple wrappers mimicking the old SQLite API so controllers do not need major changes

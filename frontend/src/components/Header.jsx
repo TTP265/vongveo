@@ -102,12 +102,12 @@ const Header = () => {
                             Chuyển sang giao diện {theme === 'dark' ? 'sáng' : 'tối'}
                         </button>
                         {user ? <>
-                            <Link to="/messages" onClick={() => setMenuOpen(false)}><MessageCircle size={18} />Tin nhắn</Link>
-                            <Link to="/my-products" onClick={() => setMenuOpen(false)}><Package size={18} />Sản phẩm của tôi</Link>
-                            <Link to="/my-orders" onClick={() => setMenuOpen(false)}><ClipboardList size={18} />Đơn mua/thuê của tôi</Link>
-                            <Link to="/seller-orders" onClick={() => setMenuOpen(false)}><Store size={18} />Đơn bán ra</Link>
-                            <Link to="/sell" onClick={() => setMenuOpen(false)}><PlusCircle size={18} />Đăng sản phẩm</Link>
-                            {user.role === 'admin' && <Link to="/admin" onClick={() => setMenuOpen(false)}><ShieldCheck size={18} />Quản lý admin</Link>}
+                            <Link to="/messages" onClick={(e) => { e.stopPropagation(); setMenuOpen(false); }}><MessageCircle size={18} />Tin nhắn</Link>
+                            <Link to="/my-products" onClick={(e) => { e.stopPropagation(); setMenuOpen(false); }}><Package size={18} />Sản phẩm của tôi</Link>
+                            <Link to="/my-orders" onClick={(e) => { e.stopPropagation(); setMenuOpen(false); }}><ClipboardList size={18} />Đơn mua/thuê của tôi</Link>
+                            <Link to="/seller-orders" onClick={(e) => { e.stopPropagation(); setMenuOpen(false); }}><Store size={18} />Đơn bán ra</Link>
+                            <Link to="/sell" onClick={(e) => { e.stopPropagation(); setMenuOpen(false); }}><PlusCircle size={18} />Đăng sản phẩm</Link>
+                            {user.role === 'admin' && <Link to="/admin" onClick={(e) => { e.stopPropagation(); setMenuOpen(false); }}><ShieldCheck size={18} />Quản lý admin</Link>}
                             <button type="button" onClick={() => { setMenuOpen(false); handleLogout(); }}><LogOut size={18} />Đăng xuất</button>
                         </> : <>
                             <Link to="/login" onClick={() => setMenuOpen(false)}>Đăng nhập</Link>
