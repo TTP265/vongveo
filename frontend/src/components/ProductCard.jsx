@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { MessageCircle } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
-
+import placeholderImg from '../assets/hero.png';
 const ProductCard = ({ product }) => {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -38,7 +38,11 @@ const ProductCard = ({ product }) => {
                 <span className={`product-type-badge ${badgeClass}`}>{label}</span>
                 {product.status === 'SOLD' && <span className="product-status-badge">SOLD</span>}
                               <img
-                src={product.image_url.startsWith('http') ? product.image_url : `${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : ''}/uploads/${product.image_url}`}
+                src={product.image_url && product.image_url.trim()
+                    ? (product.image_url.startsWith('http')
+                        ? product.image_url
+                        : `${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : ''}/uploads/${product.image_url}`)
+                    : placeholderImg}
                 alt={product.name}
                 className="product-image"
               />
