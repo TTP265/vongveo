@@ -25,9 +25,9 @@ const orderRoutes = require('./routes/orders');
 const chatRoutes = require('./routes/chat');
 
 // Basic route
-app.get('/', (req, res) => {
-  res.send('VòngVèo API is running...');
-});
+//app.get('/', (req, res) => {
+//  res.send('VòngVèo API is running...');
+//});
 
 // API Routes
 app.use('/api/auth', authRoutes);
