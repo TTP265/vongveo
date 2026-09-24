@@ -68,6 +68,13 @@ app.use((err, req, res, next) => {
 async function ensureDefaultAdmin() {
   const client = await pool.connect();
   try {
+    // Đảm bảo cột is_active & role tồn tại (phòng trường hợp bảng tạo từ schema cũ)
+    await client.query(`
+      ALTER TABLE users
+        ADD COLUMN IF NOT EXISTS is_active BOOLEAN NOT NULL DEFAULT TRUE,
+        ADD COLUMN IF NOT EXISTS role      VARCHAR(20) NOT NULL DEFAULT 'user';
+    `);
+
     const ADMIN_EMAIL = 'admin@vongveo.com';
     const hashed = await bcrypt.hash('123456', 10);
 

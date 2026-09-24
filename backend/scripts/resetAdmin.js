@@ -26,11 +26,19 @@ const ADMIN_ROLE     = 'admin';
 (async () => {
   const client = await pool.connect();
   try {
+    // ── Bước 0: Đảm bảo các cột cần thiết tồn tại ──────────────────────
+    await client.query(`
+      ALTER TABLE users
+        ADD COLUMN IF NOT EXISTS is_active BOOLEAN NOT NULL DEFAULT TRUE,
+        ADD COLUMN IF NOT EXISTS role      VARCHAR(20) NOT NULL DEFAULT 'user';
+    `);
+    console.log('✅ Columns is_active & role đã sẵn sàng');
+
     const hashed = await bcrypt.hash(ADMIN_PASSWORD, 10);
 
     // Kiểm tra admin đã tồn tại chưa
     const check = await client.query(
-      'SELECT id, is_active FROM users WHERE email = $1',
+      'SELECT id FROM users WHERE email = $1',
       [ADMIN_EMAIL]
     );
 
