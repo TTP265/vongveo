@@ -193,7 +193,7 @@ const getProductImages = async (req, res) => {
            FROM product_images pi
            JOIN products p ON p.id = pi.product_id
            WHERE p.id = $1 AND p.status IN ('Công khai', 'SOLD')
-         ) AS imgs ORDER BY sort_order`, [req.params.id, req.params.id]);
+         ) AS imgs ORDER BY sort_order`, [req.params.id]);
     res.json(rows.map(r => r.image_url));
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -210,7 +210,7 @@ const getAdminProductImages = async (req, res) => {
            SELECT pi.image_url AS image_url, pi.id AS sort_order
            FROM product_images pi
            WHERE pi.product_id = $1
-         ) AS imgs ORDER BY sort_order`, [req.params.id, req.params.id]);
+         ) AS imgs ORDER BY sort_order`, [req.params.id]);
     res.json(rows.map(r => r.image_url));
   } catch (err) {
     res.status(500).json({ message: err.message });

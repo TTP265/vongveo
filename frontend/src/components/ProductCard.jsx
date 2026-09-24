@@ -37,7 +37,11 @@ const ProductCard = ({ product }) => {
             <Link to={`/product/${product.id}`} className="product-card-link">
                 <span className={`product-type-badge ${badgeClass}`}>{label}</span>
                 {product.status === 'SOLD' && <span className="product-status-badge">SOLD</span>}
-                <img src={product.image_url} alt={product.name} className="product-image" />
+                              <img
+                src={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : ''}/uploads/${product.image_url}`}
+                alt={product.name}
+                className="product-image"
+              />
                 <div className="product-info">
                     <h3 className="product-title">{product.name}</h3>
                     <div className="product-price">
