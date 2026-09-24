@@ -41,7 +41,7 @@ const ProductCard = ({ product }) => {
                 src={product.image_url && product.image_url.trim()
                     ? (product.image_url.startsWith('http')
                         ? product.image_url
-                        : `${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : ''}/uploads/${product.image_url}`)
+                        : `${import.meta.env.VITE_API_URL || ''}/uploads/${product.image_url}`)
                     : placeholderImg}
                 alt={product.name}
                 className="product-image"
