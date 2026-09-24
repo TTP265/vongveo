@@ -4,7 +4,7 @@ import axios from 'axios';
 import Header from '../components/Header';
 import ProductCard from '../components/ProductCard';
 import { Shirt, Home as HomeIcon, PenTool, PartyPopper, ArrowDown, Recycle, ShoppingBag, Sparkles } from 'lucide-react';
-
+import heroImg from '../assets/hero.png';
 const categories = [
     { id: 'Thời trang', name: 'Thời trang', icon: <Shirt size={24} /> },
     { id: 'Đồ gia dụng', name: 'Đồ gia dụng', icon: <HomeIcon size={24} /> },
@@ -61,7 +61,7 @@ const Home = () => {
                     <div className="home-hero-art" aria-hidden="true">
                         <div className="hero-orbit hero-orbit-one" />
                         <div className="hero-orbit hero-orbit-two" />
-                        <div className="hero-art-main"><ShoppingBag size={68} strokeWidth={1.4} /></div>
+                        <div className="hero-art-main"><img src={heroImg} alt="Hero" className="hero-art-image" /></div>
                         <div className="hero-art-tag hero-art-tag-top"><Sparkles size={17} /> Đồ độc đáo</div>
                         <div className="hero-art-tag hero-art-tag-bottom"><Recycle size={18} /> Dùng lại thật vui</div>
                     </div>

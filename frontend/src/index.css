@@ -386,6 +386,7 @@ input, textarea, select {
 .hero-orbit-two { width: 285px; height: 285px; border-style: dashed; transform: rotate(-18deg); }
 .hero-art-main { z-index: 1; display: grid; width: 148px; height: 148px; place-items: center; border: 1px solid rgba(255,255,255,.8); border-radius: 38px; background: linear-gradient(145deg, #a8e5bd, #fbd6aa); color: #26734a; box-shadow: 0 24px 50px rgba(50,110,75,.18); transform: rotate(-8deg); }
 .hero-art-tag { position: absolute; z-index: 2; display: inline-flex; align-items: center; gap: .45rem; padding: .65rem .85rem; border: 1px solid rgba(255,255,255,.8); border-radius: 999px; background: rgba(255,255,255,.86); color: #375d46; font-size: .85rem; font-weight: 700; box-shadow: 0 8px 24px rgba(50,80,60,.1); }
+.hero-art-image { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
 .hero-art-tag-top { top: 12%; right: 4%; transform: rotate(5deg); }
 .hero-art-tag-bottom { bottom: 12%; left: 1%; transform: rotate(-5deg); }
 .home-products-section { scroll-margin-top: 90px; }
