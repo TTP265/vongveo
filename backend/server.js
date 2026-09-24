@@ -1,6 +1,12 @@
 const express = require('express');
 const cors = require('cors');
-const db = require('./config/db');
+const bcrypt = require('bcryptjs');
+const { Pool } = require('pg');
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
+});
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -10,12 +16,14 @@ const path = require('path');
 app.use(cors({ origin: [/\.ngrok-free\.app$/] }));
 app.use(express.json());
 app.use('/uploads', express.static(path.resolve(__dirname, 'uploads'))); // Phục vụ file tĩnh
+// Kiểm tra kết nối DB còn sống trước mỗi request
 app.use(async (req, res, next) => {
   try {
-    await db.ready;
+    await pool.query('SELECT 1');
     next();
-  } catch {
-    res.status(500).json({ message: 'Database schema is not ready' });
+  } catch (err) {
+    console.error('DB health-check failed:', err.message);
+    res.status(500).json({ message: 'Database không sẵn sàng' });
   }
 });
 
@@ -54,36 +62,38 @@ app.use((err, req, res, next) => {
   next();
 });
 
-// Start server
-// ------------------------------------------------------------
-// 1️⃣  Ensure a default admin account exists when the server starts
-// ------------------------------------------------------------
-const bcrypt = require('bcryptjs');
-
+// ─────────────────────────────────────────────────────────────
+// Đảm bảo tài khoản admin tồn tại khi server khởi động
+// ─────────────────────────────────────────────────────────────
 async function ensureDefaultAdmin() {
+  const client = await pool.connect();
   try {
-    // Wait for DB schema to be ready (same as the middleware does)
-    await db.ready;
-    const adminEmail = 'admin@vongveo.com';
-    const existing = await db.get('SELECT id FROM users WHERE email = $1', [adminEmail]);
-    if (!existing) {
-      const hashed = await bcrypt.hash('123456', 10);
-      const res = await db.run(
-        `INSERT INTO users (name, email, password, role, is_active) VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-        ['Admin', adminEmail, hashed, 'admin', true]
+    const ADMIN_EMAIL = 'admin@vongveo.com';
+    const hashed = await bcrypt.hash('123456', 10);
+
+    const check = await client.query(
+      'SELECT id FROM users WHERE email = $1',
+      [ADMIN_EMAIL]
+    );
+
+    if (check.rowCount === 0) {
+      const ins = await client.query(
+        `INSERT INTO users (name, email, password, role, is_active)
+         VALUES ($1, $2, $3, 'admin', true) RETURNING id`,
+        ['Admin', ADMIN_EMAIL, hashed]
       );
-      console.log('✅ Default admin created (id=' + res.rows[0].id + ')');
+      console.log('✅ Admin created  (id=' + ins.rows[0].id + ')');
     } else {
-      // Ensure password is correct and account is active
-      const hashed = await bcrypt.hash('123456', 10);
-      await db.run(
-        `UPDATE users SET password = $1, is_active = true WHERE id = $2`,
-        [hashed, existing.id]
+      await client.query(
+        `UPDATE users SET password = $1, is_active = true, role = 'admin' WHERE id = $2`,
+        [hashed, check.rows[0].id]
       );
-      console.log('✅ Default admin password reset (id=' + existing.id + ')');
+      console.log('✅ Admin refreshed (id=' + check.rows[0].id + ')');
     }
   } catch (err) {
-    console.error('❌ Error ensuring default admin:', err);
+    console.error('❌ ensureDefaultAdmin error:', err.message);
+  } finally {
+    client.release();
   }
 }
 
