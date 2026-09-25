@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { Search, ShoppingCart, LogOut, Menu, X, UserRound, Package, ClipboardList, Store, PlusCircle, ShieldCheck, Home, Sun, Moon, MessageCircle, Leaf } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
+import axios from 'axios';
 import { CartContext } from '../context/CartContext';
 
 const Header = () => {
@@ -13,6 +14,7 @@ const Header = () => {
     const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
     const [menuOpen, setMenuOpen] = useState(false);
     const [theme, setTheme] = useState(() => localStorage.getItem('vongveo-theme') || 'light');
+    const [unreadCount, setUnreadCount] = useState(0);
     const menuRef = useRef(null);
 
     useEffect(() => {
@@ -42,6 +44,25 @@ const Header = () => {
             document.removeEventListener('keydown', closeOnEscape);
         };
     }, []);
+
+    useEffect(() => {
+        if (!user) {
+            setUnreadCount(0);
+            return;
+        }
+        const fetchUnread = async () => {
+            try {
+                const response = await axios.get('/api/chat/conversations');
+                const totalUnread = response.data.reduce((acc, conv) => acc + Number(conv.unread_count || 0), 0);
+                setUnreadCount(totalUnread);
+            } catch (error) {
+                // Ignore error
+            }
+        };
+        fetchUnread();
+        const timer = setInterval(fetchUnread, 15000);
+        return () => clearInterval(timer);
+    }, [user]);
 
     const handleLogout = () => {
         logout();
@@ -88,7 +109,12 @@ const Header = () => {
                 </Link>}
                 <div className="header-menu-wrapper" ref={menuRef}>
                     <button type="button" className="menu-toggle" aria-label={menuOpen ? 'Đóng menu' : 'Mở menu chức năng'} aria-expanded={menuOpen} aria-controls="site-menu" onClick={() => setMenuOpen((open) => !open)}>
-                        {menuOpen ? <X size={24} /> : <Menu size={24} />}
+                        {menuOpen ? <X size={24} /> : (
+                            <>
+                                <Menu size={24} />
+                                {unreadCount > 0 && <span className="menu-unread-badge"></span>}
+                            </>
+                        )}
                     </button>
                     {menuOpen && <nav className="site-menu" id="site-menu" aria-label="Chức năng">
                         <div className="site-menu-user">
@@ -102,7 +128,7 @@ const Header = () => {
                             Chuyển sang giao diện {theme === 'dark' ? 'sáng' : 'tối'}
                         </button>
                         {user ? <>
-                            <Link to="/messages" onClick={(e) => { e.stopPropagation(); setMenuOpen(false); }}><MessageCircle size={18} />Tin nhắn</Link>
+                            <Link to="/messages" onClick={(e) => { e.stopPropagation(); setMenuOpen(false); }}><MessageCircle size={18} />Tin nhắn{unreadCount > 0 && <span className="menu-unread-count">{unreadCount}</span>}</Link>
                             <Link to="/my-products" onClick={(e) => { e.stopPropagation(); setMenuOpen(false); }}><Package size={18} />Sản phẩm của tôi</Link>
                             <Link to="/my-orders" onClick={(e) => { e.stopPropagation(); setMenuOpen(false); }}><ClipboardList size={18} />Đơn mua/thuê của tôi</Link>
                             <Link to="/seller-orders" onClick={(e) => { e.stopPropagation(); setMenuOpen(false); }}><Store size={18} />Đơn bán ra</Link>
