@@ -17,7 +17,7 @@ exports.listConversations = async (req, res) => {
               CASE WHEN c.buyer_id = $1 THEN s.name ELSE b.name END AS other_name,
               (SELECT body FROM chat_messages WHERE conversation_id = c.id ORDER BY id DESC LIMIT 1) AS last_message,
               (SELECT created_at FROM chat_messages WHERE conversation_id = c.id ORDER BY id DESC LIMIT 1) AS last_message_at,
-              (SELECT COUNT(*) FROM chat_messages WHERE conversation_id = c.id AND sender_id <> $1 AND is_read = 0) AS unread_count
+              (SELECT COUNT(*) FROM chat_messages WHERE conversation_id = c.id AND sender_id <> $1 AND is_read = false) AS unread_count
        FROM chat_conversations c
        JOIN products p ON p.id = c.product_id
        JOIN users b ON b.id = c.buyer_id
@@ -79,7 +79,7 @@ exports.getMessages = async (req, res) => {
       [uid, conversationId]
     );
     if (!conversation) return res.status(404).json({ message: 'Không tìm thấy cuộc trò chuyện' });
-    await db.run('UPDATE chat_messages SET is_read = 1 WHERE conversation_id = $1 AND sender_id <> $2', [conversationId, uid]);
+    await db.run('UPDATE chat_messages SET is_read = true WHERE conversation_id = $1 AND sender_id <> $2', [conversationId, uid]);
     const messages = await db.all(
       `SELECT m.id, m.conversation_id, m.sender_id, m.body, m.created_at, u.name AS sender_name
        FROM chat_messages m
