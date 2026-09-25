@@ -72,7 +72,10 @@ async function ensureDefaultAdmin() {
     await client.query(`
       ALTER TABLE users
         ADD COLUMN IF NOT EXISTS is_active BOOLEAN NOT NULL DEFAULT TRUE,
-        ADD COLUMN IF NOT EXISTS role      VARCHAR(20) NOT NULL DEFAULT 'user';
+        ADD COLUMN IF NOT EXISTS role      VARCHAR(20) NOT NULL DEFAULT 'user',
+        ADD COLUMN IF NOT EXISTS phone     TEXT,
+        ADD COLUMN IF NOT EXISTS address   TEXT,
+        ADD COLUMN IF NOT EXISTS profile_image TEXT;
     `);
 
     const ADMIN_EMAIL = 'admin@vongveo.com';
