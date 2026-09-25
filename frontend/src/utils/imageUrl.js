@@ -8,7 +8,7 @@
 export const getImageUrl = (path) => {
   if (!path) return '';
   // Absolute URL?
-  if (/^https?:\/\//i.test(path)) {
+  if (/^https?:\/\//i.test(path) || path.startsWith('data:')) {
     return path;
   }
   const base = import.meta.env.VITE_API_URL || '';

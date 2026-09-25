@@ -8,10 +8,7 @@ const path = require('path');
 const crypto = require('crypto');
 
 const profileUpload = multer({
-    storage: multer.diskStorage({
-        destination: path.resolve(__dirname, '../uploads'),
-        filename: (req, file, callback) => callback(null, `${crypto.randomUUID()}${path.extname(file.originalname).toLowerCase()}`)
-    }),
+    storage: multer.memoryStorage(),
     limits: { fileSize: 5 * 1024 * 1024, files: 1 },
     fileFilter: (req, file, callback) => {
         if (!['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.mimetype)) {

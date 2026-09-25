@@ -108,7 +108,7 @@ const updateMe = async (req, res) => {
     const existing = await db.get('SELECT id FROM users WHERE email = $1 AND id <> $2', [email, req.user.user_id]);
     if (existing) return res.status(409).json({ message: 'Email này đã được tài khoản khác sử dụng' });
 
-    const profileImage = req.file ? `/uploads/${req.file.filename}` : null;
+    const profileImage = req.file ? `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}` : null;
     await db.run(
       `UPDATE users SET name = $1, email = $2, phone = $3, address = $4, profile_image = COALESCE($5, profile_image) WHERE id = $6`,
       [name, email, phone, address, profileImage, req.user.user_id]

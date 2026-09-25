@@ -6,13 +6,7 @@ const multer = require('multer');
 const path = require('path');
 const crypto = require('crypto');
 
-const storage = multer.diskStorage({
-    destination: path.resolve(__dirname, '../uploads'),
-    filename: (req, file, callback) => {
-        const extension = path.extname(file.originalname).toLowerCase();
-        callback(null, `${crypto.randomUUID()}${extension}`);
-    }
-});
+const storage = multer.memoryStorage();
 const upload = multer({
     storage,
     limits: { fileSize: 20 * 1024 * 1024, files: 10 },

@@ -84,7 +84,7 @@ const updateMyProduct = async (req, res) => {
       return res.status(400).json({ message: 'Loại giao dịch không hợp lệ' });
     if (!Number.isFinite(parsedPrice) || parsedPrice <= 0)
       return res.status(400).json({ message: 'Giá phải là số lớn hơn 0' });
-    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+    const imageUrl = req.file ? `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}` : null;
     const result = await db.run(`UPDATE products
         SET name = $1, category = $2, description = $3, type = $4, price = $5,
             image_url = COALESCE($6, image_url), status = 'Chờ kiểm duyệt'
@@ -276,7 +276,7 @@ const createProduct = async (req, res) => {
       return res.status(400).json({ message: 'Giá phải là số lớn hơn 0' });
     if (!req.files || req.files.length === 0)
       return res.status(400).json({ message: 'Vui lòng tải lên ít nhất một ảnh sản phẩm' });
-    const imageUrls = req.files.map(f => `/uploads/${f.filename}`);
+    const imageUrls = req.files.map(f => `data:${f.mimetype};base64,${f.buffer.toString('base64')}`);
     const imageUrl = imageUrls[0];
     const result = await db.run(`INSERT INTO products (user_id, name, category, description, condition, type, price, image_url, status)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'Chờ kiểm duyệt') RETURNING id`,
