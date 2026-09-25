@@ -45,8 +45,11 @@ const pool = new Pool({
       );
       adminId = insertRes.rows[0].id;
       console.log(`✅ Created admin user (id=${adminId}).`);
-await pool.query('DELETE FROM products WHERE user_id = $1', [adminId]);
     }
+
+    // Xóa tất cả sản phẩm cũ của admin để tránh trùng lặp khi chạy lại seed
+    console.log(`🗑 Đang xóa dữ liệu sản phẩm cũ của admin (id=${adminId})...`);
+    await pool.query('DELETE FROM products WHERE user_id = $1', [adminId]);
 
     // ---------------------------------------------------------------
     // 3️⃣  Define 16 sample products (4 per category, mixed types)
