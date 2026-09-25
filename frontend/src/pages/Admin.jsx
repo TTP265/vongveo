@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { getImageUrl } from '../utils/imageUrl';
 import { Link } from 'react-router-dom';
+import Header from '../components/Header';
 
 const Admin = () => {
     const [products, setProducts] = useState([]);
@@ -42,6 +43,20 @@ const Admin = () => {
             }
         } catch (requestError) {
             setError(requestError.response?.data?.message || 'Không thể cập nhật trạng thái sản phẩm');
+        } finally {
+            setWorkingId(null);
+        }
+    };
+
+    const deleteProduct = async (productId) => {
+        if (!window.confirm('Bạn có chắc muốn xóa vĩnh viễn sản phẩm này không?')) return;
+        setWorkingId(productId);
+        setError('');
+        try {
+            await axios.delete(`/api/products/admin/${productId}`);
+            setProducts((current) => current.filter((product) => product.id !== productId));
+        } catch (requestError) {
+            setError(requestError.response?.data?.message || 'Không thể xóa sản phẩm');
         } finally {
             setWorkingId(null);
         }
@@ -93,6 +108,9 @@ const Admin = () => {
                                                 </button>
                                             </>
                                         )}
+                                        <button type="button" className="btn btn-danger" disabled={workingId === product.id} onClick={() => deleteProduct(product.id)}>
+                                            {workingId === product.id ? 'Đang xóa...' : 'Xóa'}
+                                        </button>
                                     </div>
                                 </div>
                             </article>
