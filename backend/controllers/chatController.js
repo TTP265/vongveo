@@ -46,10 +46,10 @@ exports.startConversation = async (req, res) => {
     if (!conversation) {
       try {
         const created = await db.run(
-          `INSERT INTO chat_conversations (product_id, buyer_id, seller_id) VALUES ($1, $2, $3)`,
+          `INSERT INTO chat_conversations (product_id, buyer_id, seller_id) VALUES ($1, $2, $3) RETURNING id`,
           [productId, req.user.user_id, product.user_id]
         );
-        conversation = { id: created.lastID };
+        conversation = { id: created.rows[0].id };
       } catch (error) {
         // Handle race condition where another request inserted the row
         if (error.code !== 'SQLITE_CONSTRAINT') throw error;
@@ -103,14 +103,14 @@ exports.sendMessage = async (req, res) => {
     if (!body || body.length > 2000) return res.status(400).json({ message: 'Tin nhắn cần từ 1 đến 2000 ký tự' });
     const conversation = await db.get('SELECT id FROM chat_conversations WHERE id = $1 AND (buyer_id = $2 OR seller_id = $2)', [conversationId, uid]);
     if (!conversation) return res.status(404).json({ message: 'Không tìm thấy cuộc trò chuyện' });
-    const inserted = await db.run('INSERT INTO chat_messages (conversation_id, sender_id, body) VALUES ($1, $2, $3)', [conversationId, uid, body]);
+    const inserted = await db.run('INSERT INTO chat_messages (conversation_id, sender_id, body) VALUES ($1, $2, $3) RETURNING id', [conversationId, uid, body]);
     await db.run('UPDATE chat_conversations SET updated_at = CURRENT_TIMESTAMP WHERE id = $1', [conversationId]);
     const message = await db.get(
       `SELECT m.id, m.conversation_id, m.sender_id, m.body, m.created_at, u.name AS sender_name
        FROM chat_messages m
        JOIN users u ON u.id = m.sender_id
        WHERE m.id = $1`,
-      [inserted.lastID]
+      [inserted.rows[0].id]
     );
     res.status(201).json(message);
   } catch (error) {
