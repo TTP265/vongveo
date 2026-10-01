@@ -98,10 +98,10 @@ const updateMe = async (req, res) => {
     const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : '';
     const phone = typeof req.body.phone === 'string' ? req.body.phone.trim() : '';
     const address = typeof req.body.address === 'string' ? req.body.address.trim() : '';
-    const phoneDigits = phone.replace(/\\D/g, '');
+    const phoneDigits = phone.replace(/\D/g, '');
     if (name.length < 2 || name.length > 100)
       return res.status(400).json({ message: 'Tên phải từ 2 đến 100 ký tự' });
-    if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) return res.status(400).json({ message: 'Email không hợp lệ' });
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ message: 'Email không hợp lệ' });
     if (phone && (phoneDigits.length < 9 || phoneDigits.length > 15)) return res.status(400).json({ message: 'Số điện thoại không hợp lệ' });
     if (address.length > 300) return res.status(400).json({ message: 'Địa chỉ tối đa 300 ký tự' });
 
@@ -150,9 +150,9 @@ const createUser = async (req, res) => {
     const role = req.body.role || 'user';
     const phone = typeof req.body.phone === 'string' ? req.body.phone.trim() : '';
     const address = typeof req.body.address === 'string' ? req.body.address.trim() : '';
-    const phoneDigits = phone.replace(/\\D/g, '');
+    const phoneDigits = phone.replace(/\D/g, '');
     if (name.length < 2 || name.length > 100) return res.status(400).json({ message: 'Tên phải từ 2 đến 100 ký tự' });
-    if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) return res.status(400).json({ message: 'Email không hợp lệ' });
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ message: 'Email không hợp lệ' });
     if (!['user', 'admin'].includes(role)) return res.status(400).json({ message: 'Vai trò không hợp lệ' });
     if (phone && (phoneDigits.length < 9 || phoneDigits.length > 15)) return res.status(400).json({ message: 'Số điện thoại không hợp lệ' });
     if (address.length > 300) return res.status(400).json({ message: 'Địa chỉ tối đa 300 ký tự' });
@@ -185,9 +185,9 @@ const updateUser = async (req, res) => {
     const phone = typeof req.body.phone === 'string' ? req.body.phone.trim() : '';
     const address = typeof req.body.address === 'string' ? req.body.address.trim() : '';
     const password = typeof req.body.password === 'string' ? req.body.password : '';
-    const phoneDigits = phone.replace(/\\D/g, '');
+    const phoneDigits = phone.replace(/\D/g, '');
     if (name.length < 2 || name.length > 100) return res.status(400).json({ message: 'Tên phải từ 2 đến 100 ký tự' });
-    if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) return res.status(400).json({ message: 'Email không hợp lệ' });
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ message: 'Email không hợp lệ' });
     if (!['user', 'admin'].includes(role)) return res.status(400).json({ message: 'Vai trò không hợp lệ' });
     if (phone && (phoneDigits.length < 9 || phoneDigits.length > 15)) return res.status(400).json({ message: 'Số điện thoại không hợp lệ' });
     if (address.length > 300) return res.status(400).json({ message: 'Địa chỉ tối đa 300 ký tự' });
