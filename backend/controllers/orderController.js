@@ -16,7 +16,7 @@ const createOrder = async (req, res) => {
     const note = typeof req.body.note === 'string' ? req.body.note.trim() : '';
     const phoneDigits = shippingPhone.replace(/\D/g, '');
     if (shippingName.length < 2 || shippingName.length > 100) return res.status(400).json({ message: 'Vui lòng nhập họ tên người nhận (2–100 ký tự)' });
-    if (!shippingPhone || phoneDigits.length < 9 || phoneDigits.length > 15 || /[^+\d\s().-]/.test(shippingPhone)) return res.status(400).json({ message: 'Số điện thoại không hợp lệ' });
+    if (!shippingPhone || phoneDigits.length < 9 || phoneDigits.length > 15) return res.status(400).json({ message: 'Số điện thoại không hợp lệ' });
     if (shippingAddress.length < 5 || shippingAddress.length > 300) return res.status(400).json({ message: 'Vui lòng nhập địa chỉ nhận hàng (5–300 ký tự)' });
     if (note.length > 500) return res.status(400).json({ message: 'Ghi chú tối đa 500 ký tự' });
     if (!Array.isArray(req.body.items) || req.body.items.length === 0 || req.body.items.length > 20) {

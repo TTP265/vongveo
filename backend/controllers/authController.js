@@ -101,7 +101,7 @@ const updateMe = async (req, res) => {
     const phoneDigits = phone.replace(/\D/g, '');
     if (name.length < 2 || name.length > 100)
       return res.status(400).json({ message: 'Tên phải từ 2 đến 100 ký tự' });
-    if (!/^[^\s@]+@[^\s@.][^\s@]*\.[^\s@.]{2,}$/.test(email)) return res.status(400).json({ message: 'Email không hợp lệ (ví dụ: ten@example.com)' });
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return res.status(400).json({ message: 'Email không hợp lệ (ví dụ: ten@example.com)' });
     if (phone && (phoneDigits.length < 9 || phoneDigits.length > 15)) return res.status(400).json({ message: 'Số điện thoại không hợp lệ' });
     if (address.length > 300) return res.status(400).json({ message: 'Địa chỉ tối đa 300 ký tự' });
 
