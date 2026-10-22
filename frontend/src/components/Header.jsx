@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { Search, ShoppingCart, LogOut, Menu, X, UserRound, Package, ClipboardList, Store, PlusCircle, ShieldCheck, Home, Sun, Moon, MessageCircle, Leaf } from 'lucide-react';
+import { Search, ShoppingCart, LogOut, Menu, X, UserRound, Package, ClipboardList, Store, PlusCircle, ShieldCheck, Home, Sun, Moon, MessageCircle, Leaf, Sparkles } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
 import { CartContext } from '../context/CartContext';
@@ -78,7 +78,14 @@ const Header = () => {
     return (
         <header className="header">
             <div className="container header-content">
-                <Link to="/" className="logo header-logo"><Leaf className="header-logo-icon" size={23} strokeWidth={2.6} />vongveo</Link>
+                <Link to="/" className="logo header-logo" aria-label="R2R">
+                    <span className="header-logo-main">
+                        <Leaf className="header-logo-icon" size={23} strokeWidth={2.6} aria-hidden="true" />
+                        <span>R2R</span>
+                        <Sparkles className="header-logo-sparkle" size={17} aria-hidden="true" />
+                    </span>
+                    <span className="header-logo-subtitle">Mua bán &amp; cho thuê đồ cũ</span>
+                </Link>
                 {(location.pathname !== '/' || location.search) && (
                     <Link to="/" className="header-home-shortcut" onClick={() => setMenuOpen(false)}>
                         <Home size={18} />

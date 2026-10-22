@@ -10,7 +10,9 @@
   --badge-text: #2A2350;
   --price-color: #7469B6;
   --header-bg: #7469B6;
-  --header-border-bottom: 0 solid transparent;
+  --header-border-bottom: 2px solid transparent;
+  --header-gradient-end: var(--secondary);
+  --header-sparkle-color: var(--accent);
   --product-card-bg: #FFFFFF;
   --search-bg: #FFFFFF;
   --text-on-dark: #ffffff;
@@ -47,7 +49,9 @@
   --badge-text: #2A2350;
   --price-color: #E1AFD1;
   --header-bg: #17122D;
-  --header-border-bottom: 1px solid rgba(116, 105, 182, 0.4);
+  --header-border-bottom: 2px solid transparent;
+  --header-gradient-end: var(--price-color);
+  --header-sparkle-color: var(--price-color);
   --product-card-bg: #2E2760;
   --search-bg: #2A2350;
   --text-on-dark: #FFE6E6;
@@ -97,6 +101,7 @@ input, textarea, select {
 .header {
   background-color: var(--header-bg);
   border-bottom: var(--header-border-bottom);
+  border-image: linear-gradient(90deg, var(--primary), var(--header-gradient-end)) 1;
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
   position: sticky;
   top: 0;
@@ -129,6 +134,46 @@ input, textarea, select {
 
 .header-logo {
   margin-left: -0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.12rem;
+}
+
+.header-logo-main {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.18rem;
+}
+
+.header-logo-sparkle {
+  color: var(--header-sparkle-color);
+}
+
+.header-logo-subtitle {
+  margin-top: 2px;
+  color: var(--text-on-dark-muted);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .header-logo-icon {
+    transition: transform 300ms ease;
+  }
+
+  .header-logo:hover .header-logo-icon {
+    transform: rotate(15deg);
+  }
+}
+
+@media (max-width: 760px) {
+  .header-logo-subtitle {
+    display: none;
+  }
 }
 
 .header-home-link {
