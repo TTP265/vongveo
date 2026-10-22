@@ -25,6 +25,7 @@
   --hero-outline-width: 1px;
   --hero-art-image-filter: saturate(1.4) brightness(0.85);
   --hero-art-shadow: rgba(42, 35, 80, 0.25);
+  --hero-float-duration: 4s;
   --text-dark: #2A2350;
   --text-light: #7469B6;
   --bg-color: #FFE6E6;
@@ -1840,16 +1841,16 @@ input, textarea, select {
     transform: translateY(-3px);
   }
 
-  .hero-art-main {
-    animation: hero-art-float 6s ease-in-out infinite;
+  .hero-art-image {
+    animation: hero-art-image-float var(--hero-float-duration) ease-in-out infinite;
   }
 
   .hero-art-tag-top {
-    animation: hero-tag-top-float 6s ease-in-out infinite;
+    animation: hero-tag-top-float var(--hero-float-duration) ease-in-out infinite;
   }
 
   .hero-art-tag-bottom {
-    animation: hero-tag-bottom-float 6s ease-in-out infinite;
+    animation: hero-tag-bottom-float var(--hero-float-duration) ease-in-out infinite;
   }
 
   .cart-icon-bounce {
@@ -1860,9 +1861,15 @@ input, textarea, select {
     animation: new-badge-pulse 1.6s ease-in-out infinite;
   }
 
-  @keyframes hero-art-float {
-    0%, 100% { transform: rotate(-8deg) translateY(0); }
-    50% { transform: rotate(-8deg) translateY(-6px); }
+  @keyframes hero-art-image-float {
+    0%, 100% {
+      filter: var(--hero-art-image-filter) drop-shadow(var(--hero-outline-width) 0 0 var(--hero-art-outline)) drop-shadow(calc(0px - var(--hero-outline-width)) 0 0 var(--hero-art-outline)) drop-shadow(0 var(--hero-outline-width) 0 var(--hero-art-outline)) drop-shadow(0 calc(0px - var(--hero-outline-width)) 0 var(--hero-art-outline)) drop-shadow(0 12px 18px var(--hero-art-shadow));
+      transform: translateY(0);
+    }
+    50% {
+      filter: var(--hero-art-image-filter) drop-shadow(var(--hero-outline-width) 0 0 var(--hero-art-outline)) drop-shadow(calc(0px - var(--hero-outline-width)) 0 0 var(--hero-art-outline)) drop-shadow(0 var(--hero-outline-width) 0 var(--hero-art-outline)) drop-shadow(0 calc(0px - var(--hero-outline-width)) 0 var(--hero-art-outline)) drop-shadow(0 12px 18px var(--hero-art-shadow));
+      transform: translateY(-6px);
+    }
   }
 
   @keyframes hero-tag-top-float {
