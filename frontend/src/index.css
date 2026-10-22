@@ -10,6 +10,7 @@
   --badge-text: #2A2350;
   --price-color: #7469B6;
   --header-bg: #7469B6;
+  --header-border-bottom: 0 solid transparent;
   --product-card-bg: #FFFFFF;
   --search-bg: #FFFFFF;
   --text-on-dark: #ffffff;
@@ -46,14 +47,15 @@
   --badge-text: #2A2350;
   --price-color: #E1AFD1;
   --header-bg: #17122D;
-  --product-card-bg: #2A2350;
+  --header-border-bottom: 1px solid rgba(116, 105, 182, 0.4);
+  --product-card-bg: #2E2760;
   --search-bg: #2A2350;
   --text-on-dark: #FFE6E6;
   --text-on-dark-muted: #E1AFD1;
   --text-emphasis: #FFE6E6;
   --link-color: #E1AFD1;
   --surface-tint: #1E1838;
-  --hero-bg: #241E45;
+  --hero-bg: #2A2352;
   --hero-border-color: rgb(225 175 209 / 30%);
   --hero-orbit-color: rgba(225, 175, 209, 0.5);
   --hero-art-face: #AD88C6;
@@ -64,8 +66,8 @@
   --text-dark: #FFE6E6;
   --text-light: #E1AFD1;
   --bg-color: #1E1838;
-  --white: #2A2350;
-  --border-color: rgb(225 175 209 / 30%);
+  --white: #2E2760;
+  --border-color: rgba(116, 105, 182, 0.35);
 }
 
 * {
@@ -94,6 +96,7 @@ input, textarea, select {
 /* Header */
 .header {
   background-color: var(--header-bg);
+  border-bottom: var(--header-border-bottom);
   box-shadow: 0 2px 10px rgba(0,0,0,0.05);
   position: sticky;
   top: 0;
