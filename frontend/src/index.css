@@ -1,44 +1,56 @@
 :root {
-  --primary: #205295;
-  --primary-hover: #2C74B3;
+  --primary: #7469B6;
+  --primary-hover: #AD88C6;
+  --primary-hover-text: #2A2350;
   --primary-text: #ffffff;
-  --secondary: #144272;
-  --secondary-hover: #2C74B3;
-  --secondary-text: #ffffff;
-  --accent: #2C74B3;
-  --header-bg: #0A2647;
-  --product-card-bg: #0A2647;
-  --search-bg: #144272;
+  --secondary: #E1AFD1;
+  --secondary-hover: #AD88C6;
+  --secondary-text: #2A2350;
+  --accent: #AD88C6;
+  --badge-text: #2A2350;
+  --price-color: #7469B6;
+  --header-bg: #7469B6;
+  --product-card-bg: #FFFFFF;
+  --search-bg: #FFFFFF;
   --text-on-dark: #ffffff;
-  --text-on-dark-muted: #cbd5e1;
-  --text-emphasis: #0A2647;
-  --link-color: #2C74B3;
-  --surface-tint: #EAF0FF;
+  --text-on-dark-muted: #FFE6E6;
+  --text-emphasis: #2A2350;
+  --link-color: #7469B6;
+  --surface-tint: #FFE6E6;
   --hero-bg: linear-gradient(115deg, var(--surface-tint) 0%, var(--white) 100%);
-  --text-dark: #2d3748;
-  --text-light: #718096;
-  --bg-color: #f7fafc;
+  --text-dark: #2A2350;
+  --text-light: #7469B6;
+  --bg-color: #FFE6E6;
   --white: #ffffff;
-  --border-color: #144272;
+  --border-color: #E1AFD1;
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --primary: #205295;
-  --primary-hover: #2C74B3;
+  --primary: #7469B6;
+  --primary-hover: #AD88C6;
+  --primary-hover-text: #2A2350;
   --primary-text: #ffffff;
-  --secondary: #144272;
-  --secondary-hover: #2C74B3;
-  --secondary-text: #ffffff;
-  --text-emphasis: #f7fafc;
-  --link-color: #ffffff;
-  --surface-tint: #144272;
+  --secondary: #2A2350;
+  --secondary-hover: #AD88C6;
+  --secondary-text: #FFE6E6;
+  --accent: #AD88C6;
+  --badge-text: #2A2350;
+  --price-color: #E1AFD1;
+  --header-bg: #17122D;
+  --product-card-bg: #2A2350;
+  --search-bg: #2A2350;
+  --text-on-dark: #FFE6E6;
+  --text-on-dark-muted: #E1AFD1;
+  --text-emphasis: #FFE6E6;
+  --link-color: #E1AFD1;
+  --surface-tint: #1E1838;
   --hero-bg: linear-gradient(115deg, var(--surface-tint) 0%, var(--bg-color) 100%);
-  --text-dark: #edf2f7;
-  --text-light: #cbd5e1;
-  --bg-color: #0A2647;
-  --white: #0A2647;
-  --border-color: #144272;
+  --text-dark: #FFE6E6;
+  --text-light: #E1AFD1;
+  --bg-color: #1E1838;
+  --white: #2A2350;
+  --border-color: rgb(225 175 209 / 30%);
 }
 
 * {
@@ -118,7 +130,7 @@ input, textarea, select {
   border: 1px solid var(--border-color);
   border-radius: 8px;
   background: var(--secondary);
-  color: var(--text-on-dark);
+  color: var(--secondary-text);
   font-size: 0.875rem;
   font-weight: 600;
   text-decoration: none;
@@ -127,6 +139,7 @@ input, textarea, select {
 
 .header-home-shortcut:hover {
   background: var(--primary-hover);
+  color: var(--primary-hover-text);
 }
 
 .search-bar {
@@ -139,16 +152,16 @@ input, textarea, select {
 .search-input {
   width: 100%;
   padding: 0.6rem 1rem 0.6rem 2.5rem;
-  border: 1px solid var(--secondary);
+  border: 1px solid var(--border-color);
   border-radius: 9999px;
   background: var(--search-bg);
-  color: var(--text-on-dark);
+  color: var(--text-dark);
   outline: none;
   transition: all 0.2s;
 }
 
 .search-input::placeholder {
-  color: var(--text-on-dark-muted);
+  color: var(--text-light);
   opacity: 1;
 }
 
@@ -162,7 +175,7 @@ input, textarea, select {
   left: 10px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--text-on-dark-muted);
+  color: var(--text-light);
 }
 
 .auth-buttons {
@@ -187,12 +200,13 @@ input, textarea, select {
   border: 1px solid var(--secondary);
   border-radius: 10px;
   background: var(--secondary);
-  color: var(--text-on-dark);
+  color: var(--secondary-text);
   text-decoration: none;
 }
 
 .header-cart-link:hover {
   background: var(--primary-hover);
+  color: var(--primary-hover-text);
 }
 
 :root[data-theme="dark"] .header-cart-link:hover {
@@ -209,7 +223,7 @@ input, textarea, select {
   border: 1px solid var(--secondary);
   border-radius: 10px;
   background: var(--secondary);
-  color: var(--text-on-dark);
+  color: var(--secondary-text);
   cursor: pointer;
 }
 
@@ -217,6 +231,7 @@ input, textarea, select {
 .menu-toggle[aria-expanded="true"] {
   background: var(--primary-hover);
   border-color: var(--primary-hover);
+  color: var(--primary-hover-text);
 }
 
 .menu-cart-count,
@@ -248,7 +263,7 @@ input, textarea, select {
   display: grid;
   width: min(320px, calc(100vw - 2rem));
   padding: 0.5rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   background: var(--white);
   box-shadow: 0 12px 30px rgba(0,0,0,0.14);
@@ -260,7 +275,7 @@ input, textarea, select {
   align-items: center;
   gap: 0.75rem;
   padding: 0.6rem 0.75rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border-color);
   margin-bottom: 0.35rem;
 }
 
@@ -317,6 +332,7 @@ input, textarea, select {
 :root[data-theme="dark"] .menu-toggle:hover,
 :root[data-theme="dark"] .menu-toggle[aria-expanded="true"] {
   background: var(--primary-hover);
+  color: var(--primary-hover-text);
 }
 
 :root[data-theme="dark"] .site-menu > a:hover,
@@ -354,6 +370,7 @@ input, textarea, select {
 
 .btn-primary:hover {
   background-color: var(--primary-hover);
+  color: var(--primary-hover-text);
 }
 
 .btn-secondary {
@@ -363,6 +380,7 @@ input, textarea, select {
 
 .btn-secondary:hover {
   background-color: var(--secondary-hover);
+  color: var(--primary-hover-text);
 }
 
 .btn-danger {
@@ -676,7 +694,7 @@ input, textarea, select {
   margin-top: 1.5rem;
   padding: 1rem 1.25rem;
   background: var(--white);
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
   border-radius: 12px;
 }
 
@@ -696,14 +714,26 @@ input, textarea, select {
   color: var(--text-light);
   font-weight: 600;
   cursor: pointer;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
   transition: all 0.2s;
+}
+
+.type-tab:hover {
+  background-color: var(--primary-hover);
+  color: var(--primary-hover-text);
+  border-color: var(--primary-hover);
 }
 
 .type-tab.active {
   background-color: var(--primary);
   color: var(--primary-text);
   border-color: var(--primary);
+}
+
+.type-tab.active:hover {
+  background-color: var(--primary-hover);
+  color: var(--primary-hover-text);
+  border-color: var(--primary-hover);
 }
 
 .category-tabs {
@@ -730,12 +760,21 @@ input, textarea, select {
 .category-tab:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  background-color: var(--primary-hover);
+  color: var(--primary-hover-text);
+  border-color: var(--primary-hover);
 }
 
 .category-tab.active {
   border-color: var(--primary);
   background-color: var(--primary);
   color: var(--primary-text);
+}
+
+.category-tab.active:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+  color: var(--primary-hover-text);
 }
 
 .product-grid {
@@ -777,7 +816,7 @@ input, textarea, select {
   border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 700;
-  color: white;
+  color: var(--badge-text);
 }
 
 .product-status-badge {
@@ -811,12 +850,12 @@ input, textarea, select {
 }
 
 .product-type-badge.buy {
-  background-color: #f56565; /* red */
+  background-color: var(--accent);
 }
 
 .product-type-badge.rent {
   background-color: var(--accent);
-  color: #ffffff;
+  color: var(--badge-text);
 }
 
 .product-info {
@@ -827,7 +866,7 @@ input, textarea, select {
 }
 
 .product-title {
-  color: var(--text-on-dark);
+  color: var(--text-dark);
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
@@ -839,20 +878,20 @@ input, textarea, select {
 
 .product-condition {
   font-size: 0.8rem;
-  color: var(--text-on-dark-muted);
+  color: var(--text-light);
   margin-bottom: 0.5rem;
 }
 
 .product-price {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--price-color);
   margin-top: auto;
 }
 
 .price-label {
   font-size: 0.8rem;
-  color: var(--text-on-dark-muted);
+  color: var(--text-light);
   font-weight: 400;
 }
 
@@ -893,7 +932,7 @@ input, textarea, select {
 .form-input {
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   outline: none;
   transition: all 0.2s;
@@ -901,7 +940,7 @@ input, textarea, select {
 
 .form-input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(92, 151, 255, 0.3);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 30%, transparent);
 }
 
 .error-message {
@@ -1050,7 +1089,7 @@ input, textarea, select {
   position: relative;
   min-width: 0;
   padding: 0.35rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   background: var(--white);
 }
@@ -1377,7 +1416,7 @@ input, textarea, select {
 .rent-days-control input {
   width: 90px;
   padding: 0.4rem;
-  border: 1px solid #cbd5e0;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
 }
 
@@ -1470,7 +1509,7 @@ input, textarea, select {
 
 .review-item {
   padding: 1rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border-color);
   border-radius: 10px;
 }
 
@@ -1647,7 +1686,7 @@ input, textarea, select {
 .chat-empty { display: grid; justify-items: center; gap: 1rem; padding: 3rem 1rem; color: var(--text-light); }
 .chat-list { display: grid; gap: .75rem; }
 .chat-conversation-card { display: flex; align-items: center; gap: 1rem; padding: 1rem; border-radius: 12px; background: var(--white); color: var(--text-dark); text-decoration: none; box-shadow: 0 3px 12px rgba(0,0,0,.05); }
-.chat-conversation-card > img, .chat-image-placeholder { width: 68px; height: 68px; flex: 0 0 auto; border-radius: 8px; object-fit: cover; background: #edf2f7; }
+.chat-conversation-card > img, .chat-image-placeholder { width: 68px; height: 68px; flex: 0 0 auto; border-radius: 8px; object-fit: cover; background: var(--surface-tint); }
 .chat-image-placeholder { display: grid; place-items: center; color: var(--text-light); }
 .chat-conversation-info { display: grid; min-width: 0; flex: 1; gap: .25rem; }
 .chat-conversation-info b, .chat-conversation-info small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -1661,14 +1700,14 @@ input, textarea, select {
 .chat-message-list { display: flex; height: min(58vh, 600px); min-height: 300px; flex-direction: column; gap: .75rem; overflow-y: auto; padding: 1rem; }
 .chat-message-row { display: flex; justify-content: flex-start; }
 .chat-message-row.mine { justify-content: flex-end; }
-.chat-bubble { max-width: min(75%, 520px); padding: .7rem .85rem; border-radius: 12px 12px 12px 3px; background: #f0f2f5; color: var(--text-dark); overflow-wrap: anywhere; }
+.chat-bubble { max-width: min(75%, 520px); padding: .7rem .85rem; border-radius: 12px 12px 12px 3px; background: var(--surface-tint); color: var(--text-dark); overflow-wrap: anywhere; }
 .chat-message-row.mine .chat-bubble { border-radius: 12px 12px 3px 12px; background: var(--surface-tint); }
 .chat-bubble small, .chat-bubble time { display: block; color: var(--text-light); font-size: .75rem; }
 .chat-bubble p { margin: .3rem 0; white-space: pre-wrap; }
 .chat-composer { display: flex; align-items: flex-end; gap: .75rem; padding: 1rem; border-top: 1px solid var(--border-color); }
 .chat-composer textarea { min-height: 44px; max-height: 140px; resize: vertical; }
 .chat-composer button { min-height: 44px; }
-:root[data-theme="dark"] .chat-bubble { background: #303646; }
+:root[data-theme="dark"] .chat-bubble { background: var(--surface-tint); }
 :root[data-theme="dark"] .chat-message-row.mine .chat-bubble { background: var(--surface-tint); }
 
 @media (max-width: 600px) {
