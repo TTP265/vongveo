@@ -22,6 +22,7 @@
   --hero-orbit-color: rgba(173, 136, 198, 0.5);
   --hero-art-face: #7469B6;
   --hero-art-outline: #2A2350;
+  --hero-outline-width: 1px;
   --hero-art-image-filter: saturate(1.4) brightness(0.85);
   --hero-art-shadow: rgba(42, 35, 80, 0.25);
   --text-dark: #2A2350;
@@ -56,6 +57,7 @@
   --hero-orbit-color: rgba(225, 175, 209, 0.5);
   --hero-art-face: #AD88C6;
   --hero-art-outline: #E1AFD1;
+  --hero-outline-width: 1px;
   --hero-art-image-filter: saturate(1.15) brightness(1.1);
   --hero-art-shadow: rgba(0, 0, 0, 0.3);
   --text-dark: #FFE6E6;
@@ -440,7 +442,7 @@ input, textarea, select {
 .hero-orbit-two { width: 285px; height: 285px; border-style: dashed; transform: rotate(-18deg); }
 .hero-art-main { z-index: 1; display: grid; width: 185px; height: 185px; place-items: center; border: 1px solid var(--hero-art-outline); border-radius: 47.5px; background: var(--hero-art-face); color: var(--text-on-dark); transform: rotate(-8deg); }
 .hero-art-tag { position: absolute; z-index: 2; display: inline-flex; align-items: center; gap: .45rem; padding: .65rem .85rem; border: 1px solid color-mix(in srgb, var(--text-on-dark) 80%, transparent); border-radius: 999px; background: var(--white); color: var(--text-emphasis); font-size: .85rem; font-weight: 700; box-shadow: 0 8px 24px color-mix(in srgb, var(--primary) 10%, transparent); }
-.hero-art-image { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; filter: var(--hero-art-image-filter) drop-shadow(0 8px 14px var(--hero-art-shadow)); }
+.hero-art-image { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; filter: var(--hero-art-image-filter) drop-shadow(var(--hero-outline-width) 0 0 var(--hero-art-outline)) drop-shadow(calc(0px - var(--hero-outline-width)) 0 0 var(--hero-art-outline)) drop-shadow(0 var(--hero-outline-width) 0 var(--hero-art-outline)) drop-shadow(0 calc(0px - var(--hero-outline-width)) 0 var(--hero-art-outline)) drop-shadow(0 12px 18px var(--hero-art-shadow)); }
 .hero-art-tag-top { top: 12%; right: 4%; transform: rotate(5deg); }
 .hero-art-tag-bottom { bottom: 12%; left: 1%; transform: rotate(-5deg); }
 .home-products-section { scroll-margin-top: 90px; }
