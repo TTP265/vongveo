@@ -15,6 +15,9 @@ const ProductCard = ({ product }) => {
     const badgeClass = isBuy ? 'buy' : 'rent';
     const priceLabel = isBuy ? 'Giá bán' : 'Giá thuê/ngày';
     const isOwnProduct = user && Number(user.user_id) === Number(product.user_id);
+    const createdAt = new Date(product.created_at).getTime();
+    const productAge = Date.now() - createdAt;
+    const isNew = Number.isFinite(createdAt) && productAge >= 0 && productAge <= 24 * 60 * 60 * 1000;
 
     const startChat = async () => {
         if (!user) {
@@ -38,6 +41,7 @@ const ProductCard = ({ product }) => {
             <Link to={`/product/${product.id}`} className="product-card-link">
                 <span className={`product-type-badge ${badgeClass}`}>{label}</span>
                 {product.status === 'SOLD' && <span className="product-status-badge">SOLD</span>}
+                {isNew && <span className={`product-new-badge ${product.status === 'SOLD' ? 'has-status' : ''}`}><span className="product-new-dot" />Mới đăng</span>}
                               <img
                 src={product.image_url && product.image_url.trim()
                   ? getImageUrl(product.image_url)

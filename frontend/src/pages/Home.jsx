@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../components/Header';
@@ -23,8 +23,62 @@ const reasons = [
     { title: 'Giao dịch an toàn', description: 'Nền tảng đứng giữa làm trung gian', icon: <ShieldCheck size={22} /> }
 ];
 
+const AnimatedStat = ({ value, ready = true }) => {
+    const [displayValue, setDisplayValue] = useState(0);
+    const [isVisible, setIsVisible] = useState(false);
+    const elementRef = useRef(null);
+    const hasAnimated = useRef(false);
+
+    useEffect(() => {
+        const element = elementRef.current;
+        if (!element || !('IntersectionObserver' in window)) {
+            setIsVisible(true);
+            return undefined;
+        }
+
+        const observer = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) {
+                setIsVisible(true);
+                observer.disconnect();
+            }
+        }, { threshold: 0.5 });
+        observer.observe(element);
+        return () => observer.disconnect();
+    }, []);
+
+    useEffect(() => {
+        if (!isVisible || !ready) return undefined;
+        const target = Number(value) || 0;
+        if (hasAnimated.current) {
+            setDisplayValue(target);
+            return undefined;
+        }
+
+        hasAnimated.current = true;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || target === 0) {
+            setDisplayValue(target);
+            return undefined;
+        }
+
+        const duration = 900;
+        const startTime = performance.now();
+        let frameId;
+        const updateCount = (now) => {
+            const progress = Math.min((now - startTime) / duration, 1);
+            setDisplayValue(Math.round(target * progress));
+            if (progress < 1) frameId = requestAnimationFrame(updateCount);
+        };
+
+        frameId = requestAnimationFrame(updateCount);
+        return () => cancelAnimationFrame(frameId);
+    }, [isVisible, ready, value]);
+
+    return <strong ref={elementRef}>{displayValue}</strong>;
+};
+
 const Home = () => {
     const [products, setProducts] = useState([]);
+    const [productsLoaded, setProductsLoaded] = useState(false);
     const [activeTab, setActiveTab] = useState('all'); // all, Bán, Cho thuê
     const [activeCategory, setActiveCategory] = useState(null);
     const [searchParams] = useSearchParams();
@@ -37,9 +91,30 @@ const Home = () => {
                 setProducts(res.data);
             } catch (error) {
                 console.error("Error fetching products", error);
+            } finally {
+                setProductsLoaded(true);
             }
         };
         fetchProducts();
+    }, []);
+
+    useEffect(() => {
+        const elements = document.querySelectorAll('.home-feature-section, .home-category-card');
+        if (!('IntersectionObserver' in window)) {
+            elements.forEach((element) => element.classList.add('is-visible'));
+            return undefined;
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12 });
+        elements.forEach((element) => observer.observe(element));
+        return () => observer.disconnect();
     }, []);
 
     // Filter logic
@@ -142,11 +217,11 @@ const Home = () => {
                 </section>
                 <section className="home-stats" aria-label="Thống kê sản phẩm">
                     <div className="home-stat-item">
-                        <strong>{filteredProducts.length}</strong>
+                        <AnimatedStat value={filteredProducts.length} ready={productsLoaded} />
                         <span>Sản phẩm đang hiển thị</span>
                     </div>
                     <div className="home-stat-item">
-                        <strong>{categories.length}</strong>
+                        <AnimatedStat value={categories.length} />
                         <span>Danh mục</span>
                     </div>
                 </section>

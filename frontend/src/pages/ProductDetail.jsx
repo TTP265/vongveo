@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { Link, useLocation, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { ShoppingCart } from 'lucide-react';
 import { getImageUrl } from '../utils/imageUrl';
 import Header from '../components/Header';
 import { AuthContext } from '../context/AuthContext';
@@ -24,8 +25,16 @@ const ProductDetail = () => {
     const [savingReview, setSavingReview] = useState(false);
     const [rentDays, setRentDays] = useState(1);
     const [cartMessage, setCartMessage] = useState('');
+    const [cartToastVisible, setCartToastVisible] = useState(false);
+    const [cartAnimationKey, setCartAnimationKey] = useState(0);
     const [chatStarting, setChatStarting] = useState(false);
     const [chatError, setChatError] = useState('');
+
+    useEffect(() => {
+        if (!cartToastVisible) return undefined;
+        const timeoutId = window.setTimeout(() => setCartToastVisible(false), 2000);
+        return () => window.clearTimeout(timeoutId);
+    }, [cartToastVisible, cartAnimationKey]);
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -82,6 +91,10 @@ const ProductDetail = () => {
     const addProductToCart = (goToCart = false) => {
         addToCart(product, Number(rentDays));
         setCartMessage(`${product.name} đã được thêm vào giỏ hàng.`);
+        if (!goToCart) {
+            setCartToastVisible(true);
+            setCartAnimationKey((current) => current + 1);
+        }
         if (goToCart) navigate('/cart');
     };
 
@@ -160,6 +173,7 @@ const ProductDetail = () => {
                                     )}
                                     {cartMessage && <p className="success-message">{cartMessage}</p>}
                                     <button type="button" className="btn btn-outline detail-action" onClick={() => addProductToCart(false)}>
+                                        <ShoppingCart key={cartAnimationKey} size={17} className={cartToastVisible ? 'cart-icon-bounce' : ''} aria-hidden="true" />
                                         Thêm vào giỏ hàng
                                     </button>
                                     <button type="button" className="btn btn-primary detail-action" onClick={() => addProductToCart(true)}>
@@ -207,6 +221,7 @@ const ProductDetail = () => {
                     </section>
                 )}
             </main>
+            {cartToastVisible && <div className="cart-toast" role="status" aria-live="polite">Đã thêm vào giỏ</div>}
         </>
     );
 };
