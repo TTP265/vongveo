@@ -3,9 +3,10 @@ import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../components/Header';
 import ProductCard from '../components/ProductCard';
-import { Shirt, Home as HomeIcon, PenTool, PartyPopper, ArrowDown, Recycle, Sparkles, Search, ClipboardCheck, PackageCheck, Wallet, BadgeCheck, ShieldCheck, Mail, Phone } from 'lucide-react';
+import { Shirt, Home as HomeIcon, PenTool, PartyPopper, ArrowDown, Sparkles, Search, ClipboardCheck, PackageCheck, Wallet, BadgeCheck, ShieldCheck, Mail, Phone } from 'lucide-react';
 import heroImg from '../assets/hero.png';
 import { getImageUrl } from '../utils/imageUrl';
+import BeeLogo from '../components/BeeLogo';
 const categories = [
     { id: 'Thời trang', name: 'Thời trang', icon: <Shirt size={24} /> },
     { id: 'Đồ gia dụng', name: 'Đồ gia dụng', icon: <HomeIcon size={24} /> },
@@ -167,10 +168,10 @@ const Home = () => {
                         ))}
                     </div>
                 </section>
-                <section className="home-feature-section" aria-labelledby="why-r2r-title">
+                <section className="home-feature-section" aria-labelledby="why-bee-title">
                     <div className="home-feature-heading">
-                        <p className="home-section-kicker">CÙNG R2R SỬ DỤNG ĐỒ BỀN VỮNG HƠN</p>
-                        <h2 id="why-r2r-title">Vì sao chọn R2R</h2>
+                        <p className="home-section-kicker">CÙNG BEE SỬ DỤNG ĐỒ BỀN VỮNG HƠN</p>
+                        <h2 id="why-bee-title">Vì sao chọn BEE</h2>
                     </div>
                     <div className="home-reasons-grid">
                         {reasons.map((reason) => (
@@ -272,7 +273,7 @@ const Home = () => {
             <footer className="home-footer">
                 <div className="home-footer-inner">
                     <div className="home-footer-brand">
-                        <span className="home-footer-logo"><Recycle size={22} /> R2R</span>
+                        <span className="home-footer-logo"><BeeLogo size={25} /> BEE</span>
                         <p>Nền tảng mua bán và cho thuê đồ đã qua sử dụng.</p>
                         <p className="home-footer-team">Nhóm: <span className="home-footer-blank" aria-label="Tên nhóm để trống" /></p>
                     </div>
