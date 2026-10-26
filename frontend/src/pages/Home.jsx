@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../components/Header';
 import ProductCard from '../components/ProductCard';
-import { Shirt, Home as HomeIcon, PenTool, PartyPopper, ArrowDown, Sparkles, Search, ClipboardCheck, PackageCheck, Wallet, BadgeCheck, ShieldCheck, Mail, Phone } from 'lucide-react';
+import { Shirt, Home as HomeIcon, PenTool, PartyPopper, ArrowDown, Sparkles, Search, ClipboardCheck, PackageCheck, Wallet, BadgeCheck, ShieldCheck, Mail, Phone, Recycle } from 'lucide-react';
 import heroImg from '../assets/hero.png';
 import { getImageUrl } from '../utils/imageUrl';
 import BeeLogo from '../components/BeeLogo';
