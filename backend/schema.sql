@@ -63,6 +63,15 @@ CREATE TABLE order_items (
   status VARCHAR(20) NOT NULL DEFAULT 'Chờ xác nhận'
 );
 
+-- Status history used by buyer order tracking
+CREATE TABLE order_item_status_history (
+  id SERIAL PRIMARY KEY,
+  order_item_id INTEGER NOT NULL REFERENCES order_items(id) ON DELETE CASCADE,
+  status VARCHAR(30) NOT NULL,
+  note TEXT NOT NULL DEFAULT '',
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Reviews table
 CREATE TABLE reviews (
   id SERIAL PRIMARY KEY,
@@ -99,4 +108,5 @@ CREATE TABLE chat_messages (
 CREATE INDEX idx_products_user_id ON products(user_id);
 CREATE INDEX idx_orders_user_id ON orders(user_id);
 CREATE INDEX idx_order_items_order_id ON order_items(order_id);
+CREATE INDEX idx_order_item_status_history_item_id ON order_item_status_history(order_item_id, created_at);
 CREATE INDEX idx_chat_messages_conversation_id ON chat_messages(conversation_id);

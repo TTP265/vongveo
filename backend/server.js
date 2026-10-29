@@ -68,6 +68,29 @@ app.use((err, req, res, next) => {
 async function ensureDefaultAdmin() {
   const client = await pool.connect();
   try {
+    // Order tracking history; create safely for databases that already have orders.
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS order_item_status_history (
+        id SERIAL PRIMARY KEY,
+        order_item_id INTEGER NOT NULL REFERENCES order_items(id) ON DELETE CASCADE,
+        status VARCHAR(30) NOT NULL,
+        note TEXT NOT NULL DEFAULT '',
+        created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+      CREATE INDEX IF NOT EXISTS idx_order_item_status_history_item_id
+        ON order_item_status_history(order_item_id, created_at);
+
+      UPDATE order_items SET status = 'Đã xác nhận' WHERE status = 'SOLD';
+      UPDATE orders SET status = 'Đang xử lý' WHERE status = 'SOLD';
+
+      INSERT INTO order_item_status_history (order_item_id, status, note)
+      SELECT oi.id, oi.status, 'Trạng thái hiện tại khi bật theo dõi đơn hàng'
+      FROM order_items oi
+      WHERE NOT EXISTS (
+        SELECT 1 FROM order_item_status_history h WHERE h.order_item_id = oi.id
+      );
+    `);
+
     // Đảm bảo cột is_active & role tồn tại (phòng trường hợp bảng tạo từ schema cũ)
     await client.query(`
       ALTER TABLE users

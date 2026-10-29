@@ -70,10 +70,15 @@ const createOrder = async (req, res) => {
       );
       const orderId = orderResult.rows[0].id;
       for (const item of items) {
-        await client.query(
+        const itemResult = await client.query(
           `INSERT INTO order_items (order_id, product_id, quantity, rent_days, price)
-           VALUES ($1, $2, $3, $4, $5)`,
+           VALUES ($1, $2, $3, $4, $5) RETURNING id`,
           [orderId, item.productId, item.quantity, item.rentDays, item.price]
+        );
+        await client.query(
+          `INSERT INTO order_item_status_history (order_item_id, status, note)
+           VALUES ($1, 'Chờ xác nhận', 'Đơn hàng đã được gửi đến người bán')`,
+          [itemResult.rows[0].id]
         );
       }
       await client.query('COMMIT');
@@ -96,8 +101,17 @@ const getMyOrders = async (req, res) => {
       `SELECT orders.id, orders.total_amount, orders.status, orders.created_at,
               orders.shipping_name, orders.shipping_phone, orders.shipping_address, orders.note,
               buyers.name AS account_name, buyers.email AS account_email,
-              order_items.product_id, order_items.quantity, order_items.rent_days, order_items.status AS item_status,
-              order_items.price, products.name, products.type, products.image_url
+              order_items.id AS order_item_id, order_items.product_id, order_items.quantity, order_items.rent_days, order_items.status AS item_status,
+              order_items.price, products.name, products.type, products.image_url,
+              COALESCE((
+                SELECT json_agg(json_build_object(
+                  'status', history.status,
+                  'note', history.note,
+                  'created_at', history.created_at
+                ) ORDER BY history.created_at, history.id)
+                FROM order_item_status_history history
+                WHERE history.order_item_id = order_items.id
+              ), '[]'::json) AS status_history
        FROM orders
        JOIN users AS buyers ON buyers.id = orders.user_id
        LEFT JOIN order_items ON order_items.order_id = orders.id
@@ -123,7 +137,16 @@ const getSellerOrders = async (req, res) => {
               products.image_url AS product_image,
               orders.created_at, orders.status AS order_status,
               orders.shipping_name, orders.shipping_phone, orders.shipping_address,
-              orders.note, buyers.name AS buyer_name, buyers.email AS buyer_email
+              orders.note, buyers.name AS buyer_name, buyers.email AS buyer_email,
+              COALESCE((
+                SELECT json_agg(json_build_object(
+                  'status', history.status,
+                  'note', history.note,
+                  'created_at', history.created_at
+                ) ORDER BY history.created_at, history.id)
+                FROM order_item_status_history history
+                WHERE history.order_item_id = order_items.id
+              ), '[]'::json) AS status_history
        FROM order_items
        JOIN products ON products.id = order_items.product_id
        JOIN orders ON orders.id = order_items.order_id
@@ -138,44 +161,70 @@ const getSellerOrders = async (req, res) => {
   }
 };
 
-// Seller updates status of a specific order item
+const getNextTrackingStatus = (currentStatus, productType) => {
+  const steps = productType === 'Cho thuê'
+    ? ['Chờ xác nhận', 'Đã xác nhận', 'Đang chuẩn bị', 'Đang giao', 'Đang thuê', 'Chờ trả đồ', 'Đã trả']
+    : ['Chờ xác nhận', 'Đã xác nhận', 'Đang chuẩn bị', 'Đang giao', 'Đã giao'];
+  const currentIndex = steps.indexOf(currentStatus);
+  return currentIndex < 0 ? null : steps[currentIndex + 1] || null;
+};
+
+// Seller advances a specific item through its tracking steps.
 const updateSellerOrderItemStatus = async (req, res) => {
+  const client = await db.pool.connect();
   try {
-    const requestedStatus = req.body.status;
-    if (!['Đã xác nhận', 'Từ chối'].includes(requestedStatus)) {
-      return res.status(400).json({ message: 'Trạng thái xử lý không hợp lệ' });
-    }
-    const status = requestedStatus === 'Đã xác nhận' ? 'SOLD' : 'Từ chối';
-    const updateResult = await db.run(
-      `UPDATE order_items
-       SET status = $1
-       WHERE id = $2 AND status = 'Chờ xác nhận'
-         AND product_id IN (SELECT id FROM products WHERE user_id = $3)`,
-      [status, req.params.itemId, req.user.user_id]
+    await client.query('BEGIN');
+    const itemResult = await client.query(
+      `SELECT oi.id, oi.order_id, oi.product_id, oi.status, p.type
+       FROM order_items oi
+       JOIN products p ON p.id = oi.product_id
+       WHERE oi.id = $1 AND p.user_id = $2
+       FOR UPDATE OF oi`,
+      [req.params.itemId, req.user.user_id]
     );
-    if (updateResult.rowCount === 0) return res.status(404).json({ message: 'Không tìm thấy đơn chờ xác nhận cho sản phẩm của bạn' });
-
-    const item = await db.get('SELECT order_id, product_id FROM order_items WHERE id = $1', [req.params.itemId]);
-    if (!item) return res.json({ message: 'Đã cập nhật trạng thái đơn hàng', status });
-
-    // Update order status based on remaining items
-    const updateOrderStatus = async () => {
-      await db.run(
-        `UPDATE orders SET status = CASE
-               WHEN EXISTS (SELECT 1 FROM order_items WHERE order_id = $1 AND status = 'Chờ xác nhận') THEN 'Chờ xác nhận'
-               WHEN EXISTS (SELECT 1 FROM order_items WHERE order_id = $1 AND status = 'Từ chối') THEN 'Có sản phẩm bị từ chối'
-               ELSE 'SOLD' END
-         WHERE id = $1`,
-        [item.order_id]
-      );
-    };
-    if (status === 'SOLD') {
-      await db.run(`UPDATE products SET status = 'SOLD' WHERE id = $1`, [item.product_id]);
+    const item = itemResult.rows[0];
+    if (!item) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({ message: 'Không tìm thấy đơn cho sản phẩm của bạn' });
     }
-    await updateOrderStatus();
-    return res.json({ message: status === 'SOLD' ? 'Đã xác nhận yêu cầu' : 'Đã từ chối yêu cầu', status });
+
+    const requestedStatus = req.body.status;
+    const isRejecting = requestedStatus === 'Từ chối' && item.status === 'Chờ xác nhận';
+    if (!isRejecting && requestedStatus !== getNextTrackingStatus(item.status, item.type)) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({ message: 'Trạng thái tiếp theo không hợp lệ' });
+    }
+
+    await client.query('UPDATE order_items SET status = $1 WHERE id = $2', [requestedStatus, item.id]);
+    await client.query(
+      `INSERT INTO order_item_status_history (order_item_id, status, note)
+       VALUES ($1, $2, $3)`,
+      [item.id, requestedStatus, isRejecting ? 'Người bán đã từ chối yêu cầu' : 'Người bán cập nhật trạng thái']
+    );
+
+    if (requestedStatus === 'Đã xác nhận' && item.type !== 'Cho thuê') {
+      await client.query(`UPDATE products SET status = 'SOLD' WHERE id = $1`, [item.product_id]);
+    }
+
+    await client.query(
+      `UPDATE orders SET status = CASE
+         WHEN NOT EXISTS (SELECT 1 FROM order_items WHERE order_id = $1 AND status = 'Chờ xác nhận')
+           AND NOT EXISTS (SELECT 1 FROM order_items WHERE order_id = $1 AND status NOT IN ('Đã giao', 'Đã trả', 'Từ chối', 'Đã hủy'))
+           AND EXISTS (SELECT 1 FROM order_items WHERE order_id = $1 AND status IN ('Đã giao', 'Đã trả')) THEN 'Hoàn tất'
+         WHEN NOT EXISTS (SELECT 1 FROM order_items WHERE order_id = $1 AND status <> 'Từ chối') THEN 'Bị từ chối'
+         WHEN NOT EXISTS (SELECT 1 FROM order_items WHERE order_id = $1 AND status = 'Chờ xác nhận') THEN 'Đang xử lý'
+         ELSE 'Chờ xác nhận' END
+       WHERE id = $1`,
+      [item.order_id]
+    );
+
+    await client.query('COMMIT');
+    return res.json({ message: 'Đã cập nhật trạng thái đơn hàng', status: requestedStatus });
   } catch (err) {
+    await client.query('ROLLBACK');
     sendError(res, err);
+  } finally {
+    client.release();
   }
 };
 
@@ -200,7 +249,17 @@ const cancelMyOrder = async (req, res) => {
       await client.query('ROLLBACK');
       return res.status(409).json({ message: 'Chỉ có thể hủy khi tất cả sản phẩm vẫn đang chờ người bán xác nhận' });
     }
-    await client.query(`UPDATE order_items SET status = 'Đã hủy' WHERE order_id = $1 AND status = 'Chờ xác nhận'`, [req.params.id]);
+    const canceledItems = await client.query(
+      `UPDATE order_items SET status = 'Đã hủy' WHERE order_id = $1 AND status = 'Chờ xác nhận' RETURNING id`,
+      [req.params.id]
+    );
+    for (const item of canceledItems.rows) {
+      await client.query(
+        `INSERT INTO order_item_status_history (order_item_id, status, note)
+         VALUES ($1, 'Đã hủy', 'Người mua đã hủy đơn')`,
+        [item.id]
+      );
+    }
     await client.query(`UPDATE orders SET status = 'Đã hủy' WHERE id = $1`, [req.params.id]);
     await client.query('COMMIT');
     return res.json({ message: 'Đã hủy đơn hàng', status: 'Đã hủy' });

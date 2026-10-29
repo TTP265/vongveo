@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../components/Header';
+import OrderProgress from '../components/OrderProgress';
 import { getImageUrl } from '../utils/imageUrl';
 
 const MyOrders = () => {
@@ -60,9 +61,12 @@ const MyOrders = () => {
                                 <p>Địa chỉ: {order.shipping_address}</p>
                                 {order.note && <p>Ghi chú: {order.note}</p>}
                                 {order.items.map((item) => (
-                                    <div className="order-product-line" key={`${order.id}-${item.product_id}`}>
-                                        <img className="order-product-image" src={getImageUrl(item.image_url)} alt={item.name} />
-                                        <p>{item.name} × {item.quantity}{item.type === 'Cho thuê' ? ` · ${item.rent_days} ngày` : ''} — {Number(item.price * item.quantity * (item.type === 'Cho thuê' ? item.rent_days : 1)).toLocaleString('vi-VN')}đ · {item.item_status}</p>
+                                    <div className="order-tracked-item" key={`${order.id}-${item.order_item_id}`}>
+                                        <div className="order-product-line">
+                                            <img className="order-product-image" src={getImageUrl(item.image_url)} alt={item.name} />
+                                            <p>{item.name} × {item.quantity}{item.type === 'Cho thuê' ? ` · ${item.rent_days} ngày` : ''} — {Number(item.price * item.quantity * (item.type === 'Cho thuê' ? item.rent_days : 1)).toLocaleString('vi-VN')}đ</p>
+                                        </div>
+                                        <OrderProgress item={item} />
                                     </div>
                                 ))}
                                 <strong>Tổng: {Number(order.total_amount).toLocaleString('vi-VN')}đ</strong>

@@ -1619,6 +1619,109 @@ input, textarea, select {
   font-weight: 600;
 }
 
+.order-tracked-item {
+  display: grid;
+  gap: 0.75rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.order-progress {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--surface-tint);
+  color: var(--text-dark);
+}
+
+.order-progress-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.order-progress-current {
+  color: var(--link-color);
+  font-weight: 700;
+  text-align: right;
+}
+
+.order-progress-current.is-terminal {
+  color: var(--text-light);
+}
+
+.order-progress-steps {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.order-progress-step {
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 0.6rem;
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.order-progress-dot {
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  background: var(--white);
+}
+
+.order-progress-step.is-done .order-progress-dot,
+.order-progress-step.is-current .order-progress-dot {
+  border-color: var(--primary);
+  background: var(--primary);
+}
+
+.order-progress-step.is-current .order-progress-label {
+  color: var(--link-color);
+  font-weight: 700;
+}
+
+.order-progress-event {
+  grid-column: 2;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.order-progress-step time,
+.order-progress-event small {
+  color: var(--text-light);
+  font-size: 0.78rem;
+}
+
+.order-progress-terminal {
+  color: var(--text-dark);
+  line-height: 1.5;
+}
+
+@media (max-width: 600px) {
+  .order-progress {
+    padding: 0.8rem;
+  }
+
+  .order-progress-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .order-progress-current {
+    text-align: left;
+  }
+}
+
 .rent-days-control {
   margin-top: 0.25rem;
 }
