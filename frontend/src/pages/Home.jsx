@@ -3,15 +3,14 @@ import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../components/Header';
 import ProductCard from '../components/ProductCard';
-import { Shirt, Home as HomeIcon, PenTool, PartyPopper, ArrowDown, Sparkles, Search, ClipboardCheck, PackageCheck, Wallet, BadgeCheck, ShieldCheck, Mail, Phone, Recycle } from 'lucide-react';
+import { Shirt, Home as HomeIcon, PenTool, PartyPopper, ArrowDown, Sparkles, Search, ClipboardCheck, PackageCheck, Wallet, BadgeCheck, ShieldCheck, Mail, Phone, Recycle, Check } from 'lucide-react';
 import heroImg from '../assets/hero.png';
-import { getImageUrl } from '../utils/imageUrl';
 import BeeLogo from '../components/BeeLogo';
 const categories = [
-    { id: 'Thời trang', name: 'Thời trang', icon: <Shirt size={24} /> },
-    { id: 'Đồ gia dụng', name: 'Đồ gia dụng', icon: <HomeIcon size={24} /> },
-    { id: 'Dụng cụ học tập', name: 'Dụng cụ học tập', icon: <PenTool size={24} /> },
-    { id: 'Đồ sự kiện', name: 'Đồ sự kiện', icon: <PartyPopper size={24} /> }
+    { id: 'Thời trang', name: 'Thời trang', icon: Shirt },
+    { id: 'Đồ gia dụng', name: 'Đồ gia dụng', icon: HomeIcon },
+    { id: 'Dụng cụ học tập', name: 'Dụng cụ học tập', icon: PenTool },
+    { id: 'Đồ sự kiện', name: 'Đồ sự kiện', icon: PartyPopper }
 ];
 const howItWorks = [
     { title: 'Đăng hoặc tìm đồ', icon: <Search size={22} /> },
@@ -82,6 +81,7 @@ const Home = () => {
     const [productsLoaded, setProductsLoaded] = useState(false);
     const [activeTab, setActiveTab] = useState('all'); // all, Bán, Cho thuê
     const [activeCategory, setActiveCategory] = useState(null);
+    const [visibleCategoryIds, setVisibleCategoryIds] = useState(() => new Set());
     const [searchParams] = useSearchParams();
     const searchQuery = (searchParams.get('search') || '').trim().toLocaleLowerCase('vi-VN');
 
@@ -100,37 +100,45 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
-        const elements = document.querySelectorAll('.home-feature-section, .home-category-card');
+        const featureSections = document.querySelectorAll('.home-feature-section');
+        const categoryCards = document.querySelectorAll('.home-category-card');
         if (!('IntersectionObserver' in window)) {
-            elements.forEach((element) => element.classList.add('is-visible'));
+            featureSections.forEach((element) => element.classList.add('is-visible'));
+            setVisibleCategoryIds(new Set(categories.map((category) => category.id)));
             return undefined;
         }
 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
+                    const categoryId = entry.target.dataset.categoryId;
+                    if (categoryId) {
+                        setVisibleCategoryIds((current) => new Set([...current, categoryId]));
+                    } else {
+                        entry.target.classList.add('is-visible');
+                    }
                     observer.unobserve(entry.target);
                 }
             });
         }, { threshold: 0.12 });
-        elements.forEach((element) => observer.observe(element));
+        featureSections.forEach((element) => observer.observe(element));
+        categoryCards.forEach((element) => observer.observe(element));
         return () => observer.disconnect();
     }, []);
 
-    // Filter logic
-    const filteredProducts = products.filter(product => {
+    // Tab and search determine the category counts; the selected category only filters the product grid.
+    const productsForCurrentTabAndSearch = products.filter(product => {
         let matchTab = true;
         if (activeTab === 'Bán') matchTab = product.type === 'Bán';
         if (activeTab === 'Cho thuê') matchTab = product.type === 'Cho thuê';
 
-        let matchCategory = true;
-        if (activeCategory) matchCategory = product.category === activeCategory;
-
         const matchName = !searchQuery || product.name.toLocaleLowerCase('vi-VN').includes(searchQuery);
 
-        return matchTab && matchCategory && matchName;
+        return matchTab && matchName;
     });
+    const filteredProducts = activeCategory
+        ? productsForCurrentTabAndSearch.filter((product) => product.category === activeCategory)
+        : productsForCurrentTabAndSearch;
 
     return (
         <>
@@ -190,26 +198,30 @@ const Home = () => {
                     </div>
                     <div className="home-category-grid">
                         {categories.map((cat) => {
-                            const categoryProducts = products.filter((product) => product.category === cat.id);
-                            const firstProduct = categoryProducts[0];
-                            const imageUrl = firstProduct?.image_url?.trim()
-                                ? getImageUrl(firstProduct.image_url)
-                                : '';
+                            const CategoryIcon = cat.icon;
+                            const categoryProductCount = productsForCurrentTabAndSearch
+                                .filter((product) => product.category === cat.id).length;
+                            const isActive = activeCategory === cat.id;
 
                             return (
                                 <button
                                     type="button"
                                     key={cat.id}
-                                    className={`home-category-card ${activeCategory === cat.id ? 'active' : ''}`}
-                                    onClick={() => setActiveCategory(activeCategory === cat.id ? null : cat.id)}
-                                    aria-pressed={activeCategory === cat.id}
+                                    data-category-id={cat.id}
+                                    className={`home-category-card${visibleCategoryIds.has(cat.id) ? ' is-visible' : ''}${isActive ? ' active' : ''}`}
+                                    onClick={() => {
+                                        setVisibleCategoryIds((current) => new Set([...current, cat.id]));
+                                        setActiveCategory(isActive ? null : cat.id);
+                                    }}
+                                    aria-pressed={isActive}
                                 >
                                     <span className="home-category-visual">
-                                        {imageUrl ? <img src={imageUrl} alt="" /> : <span className="home-category-icon">{cat.icon}</span>}
+                                        <span className="home-category-icon"><CategoryIcon size={62} strokeWidth={1.7} aria-hidden="true" /></span>
+                                        {isActive && <span className="home-category-check"><Check size={18} strokeWidth={3} aria-hidden="true" /></span>}
                                     </span>
                                     <span className="home-category-info">
                                         <strong>{cat.name}</strong>
-                                        <span>{categoryProducts.length} sản phẩm</span>
+                                        <span>{categoryProductCount} sản phẩm</span>
                                     </span>
                                 </button>
                             );
