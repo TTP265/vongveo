@@ -13,7 +13,6 @@
   --header-bg: #F2A900;
   --header-border-bottom: 2px solid transparent;
   --header-gradient-end: var(--secondary);
-  --header-sparkle-color: var(--accent);
   --product-card-bg: #FFFCF2;
   --search-bg: #FFFCF2;
   --text-on-dark: #4D2A00;
@@ -70,7 +69,6 @@
   --header-bg: #4D2A00;
   --header-border-bottom: 2px solid transparent;
   --header-gradient-end: #F9E6A8;
-  --header-sparkle-color: #F9E6A8;
   --product-card-bg: #4D2A00;
   --search-bg: #4D2A00;
   --text-on-dark: #F9E6A8;
@@ -176,10 +174,6 @@ input, textarea, select {
   display: inline-flex;
   align-items: center;
   gap: 0.18rem;
-}
-
-.header-logo-sparkle {
-  color: var(--header-sparkle-color);
 }
 
 .header-logo-subtitle {
@@ -751,10 +745,18 @@ input, textarea, select {
 .home-footer-logo {
   display: inline-flex;
   align-items: center;
+  flex-wrap: nowrap;
   gap: .45rem;
   color: var(--link-color);
   font-size: 1.35rem;
   font-weight: 800;
+  white-space: nowrap;
+}
+
+.header-logo-honeycomb,
+.home-footer-honeycomb {
+  display: block;
+  flex: 0 0 auto;
 }
 
 .home-footer-contact h2 {

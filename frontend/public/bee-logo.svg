@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="48" viewBox="0 0 180 48" fill="none">
+  <g transform="translate(2 4) scale(.95)" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="12.5" cy="13" rx="5.5" ry="7.5" transform="rotate(-28 12.5 13)" fill="var(--bee-wing-fill, #FFFCF2)" stroke="var(--bee-wing-stroke, #CC6F00)" stroke-width="1.6"/>
+    <ellipse cx="27.5" cy="13" rx="5.5" ry="7.5" transform="rotate(28 27.5 13)" fill="var(--bee-wing-fill, #FFFCF2)" stroke="var(--bee-wing-stroke, #CC6F00)" stroke-width="1.6"/>
+    <path d="M16 11.5C12.8 7.8 12 5.2 13 3.5M24 11.5c3.2-3.7 4-6.3 3-8" stroke="var(--bee-stripe, #4D2A00)" stroke-width="1.8"/>
+    <circle cx="13" cy="3.5" r="1.2" fill="var(--bee-stripe, #4D2A00)"/>
+    <circle cx="27" cy="3.5" r="1.2" fill="var(--bee-stripe, #4D2A00)"/>
+    <ellipse cx="20" cy="23" rx="9" ry="12" fill="var(--bee-body, #F2A900)" stroke="var(--bee-stripe, #4D2A00)" stroke-width="1.8"/>
+    <path d="M12 18.5c4.4 2.2 11.6 2.2 16 0M11.3 25c4.8 2.1 12.6 2.1 17.4 0" stroke="var(--bee-stripe, #4D2A00)" stroke-width="3.2"/>
+    <circle cx="17" cy="15" r="1" fill="var(--bee-stripe, #4D2A00)"/>
+    <circle cx="23" cy="15" r="1" fill="var(--bee-stripe, #4D2A00)"/>
+  </g>
+  <text x="49" y="36" fill="var(--text-emphasis, #4D2A00)" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="800" letter-spacing="-1.2">BEE</text>
+  <g transform="translate(145 10)" stroke="var(--primary-text, #4D2A00)" stroke-width="1.5" stroke-linejoin="round">
+    <path d="M14 0 21 4v8l-7 4-7-4V4l7-4Z" fill="var(--header-gradient-end, #F9E6A8)"/>
+    <path d="m7 12 7 4v8l-7 4-7-4v-8l7-4Z" fill="var(--accent, #CC6F00)"/>
+    <path d="m21 12 7 4v8l-7 4-7-4v-8l7-4Z" fill="var(--header-gradient-end, #F9E6A8)"/>
+  </g>
+</svg>

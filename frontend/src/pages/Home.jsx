@@ -6,6 +6,7 @@ import ProductCard from '../components/ProductCard';
 import { Shirt, Home as HomeIcon, PenTool, PartyPopper, ArrowDown, Sparkles, Search, ClipboardCheck, PackageCheck, Wallet, BadgeCheck, ShieldCheck, Mail, Phone, Recycle, Check } from 'lucide-react';
 import heroImg from '../assets/hero.png';
 import BeeLogo from '../components/BeeLogo';
+import HoneycombIcon from '../components/HoneycombIcon';
 const categories = [
     { id: 'Thời trang', name: 'Thời trang', icon: Shirt },
     { id: 'Đồ gia dụng', name: 'Đồ gia dụng', icon: HomeIcon },
@@ -285,7 +286,7 @@ const Home = () => {
             <footer className="home-footer">
                 <div className="home-footer-inner">
                     <div className="home-footer-brand">
-                        <span className="home-footer-logo"><BeeLogo size={25} /> BEE</span>
+                        <span className="home-footer-logo"><BeeLogo size={25} /> BEE <HoneycombIcon className="home-footer-honeycomb" size={26} /></span>
                         <p>Nền tảng mua bán và cho thuê đồ đã qua sử dụng.</p>
                         <p className="home-footer-team">Nhóm: <span className="home-footer-blank" aria-label="Tên nhóm để trống" /></p>
                     </div>

@@ -1,10 +1,11 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { Search, ShoppingCart, LogOut, Menu, X, UserRound, Package, ClipboardList, Store, PlusCircle, ShieldCheck, Home, Sun, Moon, MessageCircle, Sparkles } from 'lucide-react';
+import { Search, ShoppingCart, LogOut, Menu, X, Package, ClipboardList, Store, PlusCircle, ShieldCheck, Home, Sun, Moon, MessageCircle } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
 import { CartContext } from '../context/CartContext';
 import BeeLogo from './BeeLogo';
+import HoneycombIcon from './HoneycombIcon';
 
 const Header = () => {
     const { user, logout } = useContext(AuthContext);
@@ -83,7 +84,7 @@ const Header = () => {
                     <span className="header-logo-main">
                         <BeeLogo className="header-logo-icon" size={25} />
                         <span>BEE</span>
-                        <Sparkles className="header-logo-sparkle" size={17} aria-hidden="true" />
+                        <HoneycombIcon className="header-logo-honeycomb" size={26} />
                     </span>
                     <span className="header-logo-subtitle">Mua bán &amp; cho thuê đồ cũ</span>
                 </Link>
