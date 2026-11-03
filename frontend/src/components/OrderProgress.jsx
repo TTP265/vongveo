@@ -25,14 +25,16 @@ const OrderProgress = ({ item }) => {
     const currentIndex = steps.indexOf(currentStatus);
     const terminalStatus = ['Từ chối', 'Đã hủy'].includes(currentStatus);
     const history = Array.isArray(item.status_history) ? item.status_history : [];
-    const rentDueDate = item.type === 'Cho thuê' ? getRentDueDate(history, item.rent_days) : null;
-    const rentalHasStarted = currentIndex >= steps.indexOf('Đang thuê');
-    const showRentReminder = rentDueDate && rentalHasStarted && currentStatus !== 'Đã trả' && !terminalStatus;
+    const isRental = item.type === 'Cho thuê';
+    const rentDueDate = isRental ? getRentDueDate(history, item.rent_days) : null;
+    const showRentReminder = isRental && !terminalStatus;
     const dueDateText = rentDueDate ? formatDate(rentDueDate) : '';
     const isOverdue = rentDueDate && Date.now() > rentDueDate.getTime();
     const isDueToday = rentDueDate && rentDueDate.toDateString() === new Date().toDateString();
     const reminderText = !rentDueDate
-        ? ''
+        ? `Thời hạn thuê là ${Number(item.rent_days) || 0} ngày. Ngày hạn trả sẽ được tính khi đơn chuyển sang “Đang thuê”.`
+        : currentStatus === 'Đã trả'
+            ? 'Đã hoàn tất trả đồ.'
         : isOverdue
             ? 'Đã quá hạn trả đồ.'
             : isDueToday
@@ -71,7 +73,7 @@ const OrderProgress = ({ item }) => {
                                 {status === 'Đang thuê' && showRentReminder && (
                                     <li className="order-return-reminder">
                                         <strong>Nhắc hạn trả</strong>
-                                        <span>Hạn trả dự kiến: {dueDateText}</span>
+                                        {rentDueDate && <span>Hạn trả dự kiến: {dueDateText}</span>}
                                         <span>{reminderText}</span>
                                     </li>
                                 )}
