@@ -1718,6 +1718,22 @@ input, textarea, select {
   font-weight: 700;
 }
 
+.order-return-reminder {
+  display: grid;
+  gap: 0.2rem;
+  margin-left: 1.3rem;
+  padding: 0.65rem 0.8rem;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  background: var(--surface-tint);
+  color: var(--text-dark);
+  font-size: 0.86rem;
+}
+
+.order-return-reminder strong {
+  color: var(--text-emphasis);
+}
+
 .order-progress-event {
   grid-column: 2;
   display: grid;

@@ -1,3 +1,5 @@
+import { Fragment } from 'react';
+
 const getTrackingSteps = (item) => item.type === 'Cho thuê'
     ? ['Chờ xác nhận', 'Đã xác nhận', 'Đang chuẩn bị', 'Đang giao', 'Đang thuê', 'Chờ trả đồ', 'Đã trả']
     : ['Chờ xác nhận', 'Đã xác nhận', 'Đang chuẩn bị', 'Đang giao', 'Đã giao'];
@@ -6,12 +8,36 @@ const formatDate = (date) => new Date(date).toLocaleString('vi-VN', {
     day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
 });
 
+const getRentDueDate = (history, rentDays) => {
+    const startedEvent = [...history].reverse().find((entry) => entry.status === 'Đang thuê');
+    const duration = Number(rentDays);
+    if (!startedEvent || !Number.isInteger(duration) || duration < 1) return null;
+
+    const dueDate = new Date(startedEvent.created_at);
+    if (Number.isNaN(dueDate.getTime())) return null;
+    dueDate.setDate(dueDate.getDate() + duration);
+    return dueDate;
+};
+
 const OrderProgress = ({ item }) => {
     const currentStatus = item.item_status === 'SOLD' ? 'Đã xác nhận' : item.item_status;
     const steps = getTrackingSteps(item);
     const currentIndex = steps.indexOf(currentStatus);
     const terminalStatus = ['Từ chối', 'Đã hủy'].includes(currentStatus);
     const history = Array.isArray(item.status_history) ? item.status_history : [];
+    const rentDueDate = item.type === 'Cho thuê' ? getRentDueDate(history, item.rent_days) : null;
+    const rentalHasStarted = currentIndex >= steps.indexOf('Đang thuê');
+    const showRentReminder = rentDueDate && rentalHasStarted && currentStatus !== 'Đã trả' && !terminalStatus;
+    const dueDateText = rentDueDate ? formatDate(rentDueDate) : '';
+    const isOverdue = rentDueDate && Date.now() > rentDueDate.getTime();
+    const isDueToday = rentDueDate && rentDueDate.toDateString() === new Date().toDateString();
+    const reminderText = !rentDueDate
+        ? ''
+        : isOverdue
+            ? 'Đã quá hạn trả đồ.'
+            : isDueToday
+                ? 'Hạn trả dự kiến là hôm nay.'
+                : `Còn ${Math.ceil((rentDueDate - new Date()) / 86400000)} ngày đến hạn trả.`;
 
     return (
         <section className="order-progress" aria-label={`Tiến trình đơn hàng: ${currentStatus}`}>
@@ -31,16 +57,25 @@ const OrderProgress = ({ item }) => {
                         const isDone = currentIndex >= 0 && index < currentIndex;
                         const isCurrent = index === currentIndex;
                         return (
-                            <li key={status} className={`order-progress-step${isDone ? ' is-done' : ''}${isCurrent ? ' is-current' : ''}`}>
-                                <span className="order-progress-dot" aria-hidden="true" />
-                                <span className="order-progress-label">{status}</span>
-                                {event && (
-                                    <span className="order-progress-event">
-                                        <time dateTime={event.created_at}>{formatDate(event.created_at)}</time>
-                                        {event.note && <small>{event.note}</small>}
-                                    </span>
+                            <Fragment key={status}>
+                                <li className={`order-progress-step${isDone ? ' is-done' : ''}${isCurrent ? ' is-current' : ''}`}>
+                                    <span className="order-progress-dot" aria-hidden="true" />
+                                    <span className="order-progress-label">{status}</span>
+                                    {event && (
+                                        <span className="order-progress-event">
+                                            <time dateTime={event.created_at}>{formatDate(event.created_at)}</time>
+                                            {event.note && <small>{event.note}</small>}
+                                        </span>
+                                    )}
+                                </li>
+                                {status === 'Đang thuê' && showRentReminder && (
+                                    <li className="order-return-reminder">
+                                        <strong>Nhắc hạn trả</strong>
+                                        <span>Hạn trả dự kiến: {dueDateText}</span>
+                                        <span>{reminderText}</span>
+                                    </li>
                                 )}
-                            </li>
+                            </Fragment>
                         );
                     })}
                 </ol>

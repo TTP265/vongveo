@@ -68,7 +68,7 @@ const SellerOrders = () => {
                                 {order.note && <p>Ghi chú: {order.note}</p>}
                                 <p>{order.product_type === 'Cho thuê' ? 'Thuê' : 'Mua'} · Số lượng: {order.quantity}{order.product_type === 'Cho thuê' ? ` · ${order.rent_days} ngày` : ''} · Giá: {Number(order.price * order.quantity * (order.product_type === 'Cho thuê' ? order.rent_days : 1)).toLocaleString('vi-VN')}đ</p>
                                 <p>Ngày đặt: {new Date(order.created_at).toLocaleString('vi-VN')}</p>
-                                <OrderProgress item={{ item_status: order.item_status, type: order.product_type, status_history: order.status_history }} />
+                                <OrderProgress item={{ item_status: order.item_status, type: order.product_type, rent_days: order.rent_days, status_history: order.status_history }} />
                                 {getNextStatus(order) && (
                                     <div className="admin-product-actions">
                                         <button type="button" className="btn btn-primary" disabled={workingId === order.order_item_id} onClick={() => updateStatus(order.order_item_id, getNextStatus(order))}>
